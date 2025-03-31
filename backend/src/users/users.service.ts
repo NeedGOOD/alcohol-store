@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -13,9 +13,15 @@ export class UsersService {
   ) { }
 
   async create(createUserDto: CreateUserDto) {
-    const user = this.userRepository.create(createUserDto);
+    const user = await this.findUserByEmail(createUserDto.email);
 
-    return await this.userRepository.save(user);
+    if (user) {
+      throw new ConflictException('User with email already.');
+    }
+
+    const createUser = this.userRepository.create(createUserDto);
+
+    return await this.userRepository.save(createUser);
   }
 
   async findAll() {
@@ -23,16 +29,34 @@ export class UsersService {
   }
 
   async findOne(id: number) {
-    return await this.userRepository.findOne({ where: { id } });
+    try {
+      return await this.userRepository.findOneOrFail({ where: { id } });
+    } catch (error) {
+      throw new NotFoundException('User not found by id.');
+    }
+  }
+
+  async findUserByEmail(email: string) {
+    return this.userRepository.findOne({ where: { email } })
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    await this.userRepository.update(id, updateUserDto);
+    if (updateUserDto.password) {
+      throw new BadRequestException('An extra password field has been added.');
+    }
 
-    return await this.findOne(id);
+    await this.findOne(id);
+
+    try {
+      await this.userRepository.update(id, updateUserDto);
+
+      return await this.findOne(id);
+    } catch (error) {
+      throw new BadRequestException('Added extra fields.');
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    return await this.userRepository.delete(id);
   }
 }

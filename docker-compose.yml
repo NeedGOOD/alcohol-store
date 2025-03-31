@@ -11,7 +11,7 @@ services:
       - ./backend:/usr/be
       - be-nm:/usr/be/node_modules
     environment:
-      POSTGRES_HOST: postgres
+      POSTGRES_HOST: postgresql
       POSTGRES_PORT: 5432
       POSTGRES_DATABASE: ${POSTGRES_DATABASE}
       POSTGRES_USERNAME: ${POSTGRES_USERNAME}
@@ -19,7 +19,7 @@ services:
     networks:
       alcohol-store-be:
 
-  postgresql:
+  postgres:
     container_name: postgresql
     image: postgres
     restart: unless-stopped

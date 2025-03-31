@@ -1,10 +1,11 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
+import { UpdatePasswordUserDto } from './dto/update-password-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -62,6 +63,28 @@ export class UsersService {
     }
   }
 
+  async updatePassword(id: number, updatePasswordUserDto: UpdatePasswordUserDto) {
+    const user = await this.findOne(id);
+
+    const password: UpdatePasswordUserDto = updatePasswordUserDto;
+
+    await this.verificationPassword(password.oldPassword, user.password);
+
+    if (password.newPassword !== password.confirmPassword) {
+      throw new BadRequestException('Password do not match.');
+    }
+
+    try {
+      const hashingPassword = await this.hashingPassword(password.newPassword);
+
+      await this.userRepository.update(id, { password: hashingPassword });
+
+      return await this.findOne(id);
+    } catch (error) {
+      throw new BadRequestException('Added extra fields.');
+    }
+  }
+
   async remove(id: number) {
     return await this.userRepository.delete(id);
   }
@@ -70,5 +93,13 @@ export class UsersService {
     const salt = 10;
 
     return await bcrypt.hash(password, salt);
+  }
+
+  private async verificationPassword(password: string, hashedPassword: string) {
+    const checkingPassword = await bcrypt.compare(password, hashedPassword);
+
+    if (!checkingPassword) {
+      throw new UnauthorizedException('Incorrect password.');
+    }
   }
 }

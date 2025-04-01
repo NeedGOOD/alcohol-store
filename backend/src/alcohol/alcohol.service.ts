@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAlcoholDto } from './dto/create-alcohol.dto';
 import { UpdateAlcoholDto } from './dto/update-alcohol.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -22,8 +22,15 @@ export class AlcoholService {
     return await this.alcoholRepository.find({ relations: ['orderItems'] });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} alcohol`;
+  async findOne(id: number) {
+    try {
+      return await this.alcoholRepository.findOneOrFail({
+        where: { id },
+        relations: { orderItems: true }
+      });
+    } catch (error) {
+      throw new NotFoundException(`Alcohol not found by id ${id}.`);
+    }
   }
 
   update(id: number, updateAlcoholDto: UpdateAlcoholDto) {

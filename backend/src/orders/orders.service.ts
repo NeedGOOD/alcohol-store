@@ -27,14 +27,14 @@ export class OrdersService {
   }
 
   async findAll() {
-    return await this.orderRepository.find({ relations: ['user'] });
+    return await this.orderRepository.find({ relations: ['user', 'orderItems'] });
   }
 
   async findOne(id: number) {
     try {
       return await this.orderRepository.findOneOrFail({
         where: { id },
-        relations: { user: true }
+        relations: { user: true, orderItems: true }
       });
     } catch (error) {
       throw new NotFoundException(`Order not found by id ${id}.`);

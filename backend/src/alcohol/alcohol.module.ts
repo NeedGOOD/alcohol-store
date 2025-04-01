@@ -9,5 +9,6 @@ import { OrderItem } from 'src/order-items/entities/order-item.entity';
   imports: [TypeOrmModule.forFeature([Alcohol, OrderItem])],
   controllers: [AlcoholController],
   providers: [AlcoholService],
+  exports: [AlcoholService],
 })
 export class AlcoholModule { }

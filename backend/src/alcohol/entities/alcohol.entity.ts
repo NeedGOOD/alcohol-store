@@ -1,24 +1,25 @@
 import { Countries } from "src/enums/countries.enum";
 import { TypeAlcohol } from "src/enums/typeAlcohol.enum";
 import { OrderItem } from "src/order-items/entities/order-item.entity";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, Generated, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: 'alcohol' })
 export class Alcohol {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @PrimaryGeneratedColumn('uuid')
+  @Column({ type: 'uuid', name: 'item_code', nullable: false, unique: true })
+  @Generated('uuid')
   item_code: string;
 
   @Column({ type: 'varchar', length: 30, name: 'brand', nullable: false })
   brand: string;
 
   @Column({ type: 'enum', enum: Countries, name: 'countries', nullable: false })
-  countries: string;
+  countries: Countries;
 
   @Column({ type: 'enum', enum: TypeAlcohol, name: 'type_alcohol', nullable: false })
-  type_alcohol: string;
+  type_alcohol: TypeAlcohol;
 
   @Column({ type: 'decimal', precision: 10, scale: 2, name: 'volume', nullable: false })
   volume: number;

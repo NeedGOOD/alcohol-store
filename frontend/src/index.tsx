@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Header from "./components/addHeader";
 import Home from "./components/addHomePage";
 import Footer from "./components/addFooter";
+import Catalog from "./components/addCatalogPage"
 
 const App: React.FC = () => {
   return (
@@ -14,7 +15,7 @@ const App: React.FC = () => {
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
-        {/* <Route path="/catalog" element={<Catalog />} /> */}
+        <Route path="/catalog" element={<Catalog />} />
         {/* <Route path="/product/:id" element={<Product />} /> */}
         {/* <Route path="/cart" element={<Cart />} /> */}
         {/* <Route path="/login" element={<Login />} /> */}

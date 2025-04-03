@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { AlcoholService } from './alcohol.service';
 import { CreateAlcoholDto } from './dto/create-alcohol.dto';
+import { FilterAlcoholDto } from './dto/filter-alcohol.dto';
 // import { UpdateAlcoholDto } from './dto/update-alcohol.dto';
 
 @Controller('alcohol')
@@ -15,6 +16,11 @@ export class AlcoholController {
   @Get()
   findAll() {
     return this.alcoholService.findAll();
+  }
+
+  @Get('filter')
+  findAlcoholByFilter(@Query() filterAlcoholDto: FilterAlcoholDto) {
+    return this.alcoholService.findAlcoholByFilter(filterAlcoholDto);
   }
 
   @Get(':id')

@@ -4,6 +4,7 @@ import { CreateAlcoholDto } from './dto/create-alcohol.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Alcohol } from './entities/alcohol.entity';
 import { Repository } from 'typeorm';
+import { FilterAlcoholDto } from './dto/filter-alcohol.dto';
 
 @Injectable()
 export class AlcoholService {
@@ -30,6 +31,18 @@ export class AlcoholService {
       });
     } catch (error) {
       throw new NotFoundException(`Alcohol not found by id ${id}.`);
+    }
+  }
+
+  async findAlcoholByFilter(filterAlcoholDto: FilterAlcoholDto) {
+    const where: FilterAlcoholDto = { ...filterAlcoholDto };
+
+    Object.keys(where).forEach(key => where[key] === undefined && delete where[key]);
+
+    try {
+      return await this.alcoholRepository.find({ where });
+    } catch (error) {
+      throw new NotFoundException('Alcohol not found.');
     }
   }
 

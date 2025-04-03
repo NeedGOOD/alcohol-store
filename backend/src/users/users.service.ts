@@ -46,7 +46,7 @@ export class UsersService {
     }
   }
 
-  private async findUserByEmail(email: string) {
+  async findUserByEmail(email: string) {
     return this.userRepository.findOne({ where: { email } })
   }
 
@@ -98,7 +98,7 @@ export class UsersService {
     return await bcrypt.hash(password, salt);
   }
 
-  private async verificationPassword(password: string, hashedPassword: string) {
+  async verificationPassword(password: string, hashedPassword: string) {
     const checkingPassword = await bcrypt.compare(password, hashedPassword);
 
     if (!checkingPassword) {

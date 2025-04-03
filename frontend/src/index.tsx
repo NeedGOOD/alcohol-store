@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import Header from "./components/addHeader";
 import Home from "./components/addHomePage";
+import Footer from "./components/addFooter";
 
 const App: React.FC = () => {
   return (
@@ -21,7 +22,7 @@ const App: React.FC = () => {
         {/* <Route path="/order" element={<Order />} /> */}
         {/* <Route path="/profile" element={<Profile />} />*/}
       </Routes>
-      {/* <Footer /> */}
+      <Footer />
     </Router>
   );
 };

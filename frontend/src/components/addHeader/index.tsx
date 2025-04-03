@@ -13,7 +13,7 @@ const { Search } = Input;
 function Header() {
   return (
     <div>
-      <nav>
+      <nav className="header">
         <ul id="navBar">
           <img src="/img/logo.png" alt="Logo" id="Logo" />
           <div>
@@ -23,7 +23,7 @@ function Header() {
             <ShoppingCartOutlined />
           </div>
         </ul>
-        <ul id="navBar">
+        <ul id="secondNavBar">
           {[
             { to: "/", label: "Головна" },
             { to: "/", label: "Каталог товарів" },

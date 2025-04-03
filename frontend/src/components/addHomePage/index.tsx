@@ -95,8 +95,8 @@ function Home() {
             ))}
           </div>
         </Card>
-        <Divider style={{ marginTop: "20px" }}>Інформація</Divider>
-        <div className="collapseText" style={{ padding: "20px" }}>
+        <Divider style={{ marginTop: "20px", borderColor: "rgb(205, 70, 49)" }}>Інформація</Divider>
+        <div className="collapseText">
           <Collapse
             bordered={false}
             defaultActiveKey={["1"]}

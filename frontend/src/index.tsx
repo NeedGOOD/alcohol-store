@@ -5,12 +5,22 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 // import ProtectedRoute from "./protectedRoot";
 
 import Header from "./components/addHeader";
+import Home from "./components/addHomePage";
 
 const App: React.FC = () => {
   return (
     <Router>
       <Header />
-      <Routes></Routes>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        {/* <Route path="/catalog" element={<Catalog />} /> */}
+        {/* <Route path="/product/:id" element={<Product />} /> */}
+        {/* <Route path="/cart" element={<Cart />} /> */}
+        {/* <Route path="/login" element={<Login />} /> */}
+        {/* <Route path="/register" element={<Register />} /> */}
+        {/* <Route path="/order" element={<Order />} /> */}
+        {/* <Route path="/profile" element={<Profile />} />*/}
+      </Routes>
       {/* <Footer /> */}
     </Router>
   );

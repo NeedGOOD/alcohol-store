@@ -28,14 +28,14 @@ function Header() {
             { to: "/", label: "Головна" },
             { to: "/", label: "Каталог товарів" },
           ].map((item) => (
-            <Link to={item.to} id="navLink">
+            <Link to={item.to} id="navLink" >
               <li id="navElement" key={item.label}>
                 {item.label}
               </li>
             </Link>
           ))}
           <Search
-            placeholder="请输入内容"
+            placeholder="Пошук"
             prefix={<SearchOutlined />}
             style={{ width: 700 }}
           />

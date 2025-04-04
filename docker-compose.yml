@@ -6,7 +6,7 @@ services:
     command: npm run start:dev
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "4000:4000"
     volumes:
       - ./backend:/usr/be
       - be-nm:/usr/be/node_modules

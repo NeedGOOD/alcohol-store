@@ -6,6 +6,7 @@ import {
   ClockCircleOutlined,
   FileOutlined,
 } from "@ant-design/icons";
+import { Link } from "react-router-dom";
 
 const { Title, Paragraph } = Typography;
 const { Panel } = Collapse;
@@ -88,14 +89,18 @@ function Home() {
               { img: "/img/web-pack/liquer-with-bg.jpg", label: "Лікер" },
               { img: "/img/web-pack/beer-with-bg.jpg", label: "Пиво" },
             ].map((item) => (
-              <div className="table-cell">
-                <img src={item.img} alt={item.label} className="blockImg" />
-                <p id="alcoholTitle">{item.label}</p>
-              </div>
+              <Link to={`/catalog?type=${item.label}`} key={item.label}>
+                <div className="table-cell">
+                  <img src={item.img} alt={item.label} className="blockImg" />
+                  <p id="alcoholTitle">{item.label}</p>
+                </div>
+              </Link>
             ))}
           </div>
         </Card>
-        <Divider style={{ marginTop: "20px", borderColor: "rgb(205, 70, 49)" }}>Інформація</Divider>
+        <Divider style={{ marginTop: "20px", borderColor: "rgb(205, 70, 49)" }}>
+          Інформація
+        </Divider>
         <div className="collapseText">
           <Collapse
             bordered={false}

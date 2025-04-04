@@ -1,8 +1,9 @@
 import "./catalog.css";
 import React, { useState, useEffect } from "react";
 import "../../style.css";
-import { Slider, Collapse, Checkbox, Button, Descriptions } from "antd";
+import { Slider, Collapse, Checkbox, Button, Breadcrumb } from "antd";
 import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const { Panel } = Collapse;
 interface Alcohol {
@@ -11,6 +12,9 @@ interface Alcohol {
 
 function Catalog() {
   const [selectedType, setSelectedType] = useState<Record<string, boolean>>({});
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const type = searchParams.get("type");
   const [selectedVolume, setSelectedVolume] = useState<Record<string, boolean>>(
     {}
   );
@@ -28,11 +32,10 @@ function Catalog() {
   };
 
   useEffect(() => {
-    console.log("Type -", selectedType);
-    console.log("Volume -", selectedVolume);
-    console.log("Country -", selectedCountry);
-    console.log("Strength -", selectedStrength);
-  }, [selectedType, selectedVolume, selectedCountry, selectedStrength]);
+    if (type) {
+      setSelectedType({ [type]: true });
+    }
+  }, [type]);
 
   const alcohols: Alcohol[] = [
     { label: "Віскі" },
@@ -105,6 +108,36 @@ function Catalog() {
 
   return (
     <>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          width: "100%",
+          flexDirection: "column",
+          alignItems: "center",
+          background: "whitesmoke",
+        }}
+      >
+        <h1>{type}</h1>
+        {/* {type && ( */}
+          <Breadcrumb
+            style={{
+              margin: "16px 0",
+            }}
+            items={[
+              {
+                title: <Link to="/">Головна</Link>,
+              },
+              {
+                title: <Link to="/catalog">Каталог</Link>,
+              },
+              {
+                title: type,
+              },
+            ]}
+          />
+        {/* )} */}
+      </div>
       <div className="catalogPage">
         <div className="filterBlock">
           <Slider

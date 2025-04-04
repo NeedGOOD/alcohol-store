@@ -38,7 +38,7 @@ function Product() {
             {item.type_alcohol} {item.brand} продукт {item.volume} л{" "}
             {item.durability}
           </Title>
-          <Text type="success">✅ Є в наявності</Text>
+          {item?.availability ? (<Text type="success">✅ Є в наявності</Text>) : (<Text type="danger">❌ Немає в наявності</Text>)}
           <br />
           <Title level={2} style={{ marginTop: 10 }}>
             {item?.cost * quantity} грн
@@ -118,7 +118,7 @@ function Product() {
                 <Title level={3}>
                   {item?.brand} – легендарний бренд {item?.type_alcohol}
                 </Title>
-                <Paragraph>
+                <Paragraph style={{ fontSize: 30 }}>
                   {item?.description || "Опис товару не доданий"}
                 </Paragraph>
               </TabPane>

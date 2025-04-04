@@ -1,6 +1,7 @@
 import React from "react";
-import { Modal, Input, Button, Tabs, Form } from "antd";
+import { Modal, Input, Button, Tabs, Form, message } from "antd";
 import { GoogleOutlined } from "@ant-design/icons";
+import axios from "axios";
 
 const { TabPane } = Tabs;
 
@@ -10,19 +11,61 @@ interface AuthModalProps {
 }
 
 const AuthModal: React.FC<AuthModalProps> = ({ visible, onClose }) => {
+  const handleSubmitRegister = async (values: any) => {
+    console.log("Form values:", values);
+    // Handle form submission logic here
+    try {
+      const response = await axios.post("/users", {
+        first_name: values.firstName,
+        last_name: values.lastName,
+        email: values.email,
+        password: values.password,
+      });
+      document.cookie = `token=${response.data.accessToken}; path=/; max-age=3600`;
+      onClose();
+      message.success("Користувач зареєстрований!");
+    } catch (error) {
+      message.error("Помилка авторизації!");
+    }
+  };
+  const handleSubmitLogin = async (values: any) => {
+    console.log("Form values:", values);
+    // Handle form submission logic here
+    try {
+      const response = await axios.post("/auth/login", {
+        email: values.email,
+        password: values.password,
+      });
+      document.cookie = `token=${response.data.accessToken}; path=/; max-age=3600`;
+      onClose();
+      message.success("Успішний вхід!");
+    } catch (error) {
+      message.error("Помилка авторизації!");
+    }
+  };
   return (
     <Modal open={visible} onCancel={onClose} footer={null} width={400}>
       <Tabs defaultActiveKey="login" centered>
-        {/* Вкладка входа */}
         <TabPane tab="Вхід" key="login">
-          <Form layout="vertical">
-            <Form.Item label="Електронна пошта або телефон">
-              <Input placeholder="Введіть пошту або телефон" />
+          <Form layout="vertical" onFinish={handleSubmitLogin}>
+            <Form.Item
+              label="Електронна пошта"
+              name="emailOrPhone"
+              rules={[
+                { required: true, message: "Введіть пошту" },
+                { type: "email", message: "Невірний формат пошти" },
+              ]}
+            >
+              <Input placeholder="Введіть пошту" />
             </Form.Item>
-            <Form.Item label="Пароль">
+            <Form.Item
+              label="Пароль"
+              name="password"
+              rules={[{ required: true, message: "Введіть пароль" }]}
+            >
               <Input.Password placeholder="Введіть пароль" />
             </Form.Item>
-            <Button type="primary" block>
+            <Button type="primary" htmlType="submit" block>
               Вхід
             </Button>
           </Form>
@@ -31,19 +74,40 @@ const AuthModal: React.FC<AuthModalProps> = ({ visible, onClose }) => {
           </div>
         </TabPane>
 
-        {/* Вкладка регистрации */}
         <TabPane tab="Реєстрація" key="register">
-          <Form layout="vertical">
-            <Form.Item label="Ім'я">
+          <Form layout="vertical" onFinish={handleSubmitRegister}>
+            <Form.Item
+              label="Ім'я"
+              name="firstName"
+              rules={[{ required: true, message: "Введіть ім'я" }]}
+            >
               <Input placeholder="Введіть ім'я" />
             </Form.Item>
-            <Form.Item label="Електронна пошта">
+            <Form.Item
+              label="Фамілія"
+              name="lastName"
+              rules={[{ required: true, message: "Введіть фамілію" }]}
+            >
+              <Input placeholder="Введіть фамілію" />
+            </Form.Item>
+            <Form.Item
+              label="Email"
+              name="email"
+              rules={[
+                { required: true, message: "Введіть пошту" },
+                { type: "email", message: "Невірний формат пошти" },
+              ]}
+            >
               <Input placeholder="Введіть пошту" />
             </Form.Item>
-            <Form.Item label="Пароль">
+            <Form.Item
+              label="Пароль"
+              name="password"
+              rules={[{ required: true, message: "Введіть пароль" }]}
+            >
               <Input.Password placeholder="Введіть пароль" />
             </Form.Item>
-            <Button type="primary" block>
+            <Button type="primary" htmlType="submit" block>
               Реєстрація
             </Button>
           </Form>

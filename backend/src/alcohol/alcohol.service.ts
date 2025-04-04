@@ -50,7 +50,8 @@ export class AlcoholService {
   //   return `This action updates a #${id} alcohol`;
   // }
 
-  remove(id: number) {
-    return `This action removes a #${id} alcohol`;
+  async remove(id: number) {
+    await this.findOne(id);
+    return await this.alcoholRepository.delete(id);
   }
 }

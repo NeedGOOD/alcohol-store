@@ -11,6 +11,8 @@
 # production
 /build
 
+docker_entrypoint.sh
+
 # misc
 .DS_Store
 .env.local

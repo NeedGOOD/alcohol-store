@@ -10,6 +10,6 @@ async function bootstrap() {
   //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',  // Дозволяє ці методи
   //   allowedHeaders: 'Content-Type, Authorization',  // Дозволяє ці заголовки
   // });
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? 4000);
 }
 bootstrap();

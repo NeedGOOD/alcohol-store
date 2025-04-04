@@ -36,6 +36,6 @@ export class Alcohol {
   @Column({ type: 'text', name: 'description', nullable: true })
   description?: string;
 
-  @OneToMany(() => OrderItem, (orderItems) => orderItems.alcohol)
+  @OneToMany(() => OrderItem, (orderItems) => orderItems.alcohol, { onDelete: 'CASCADE' })
   orderItems: OrderItem[];
 }

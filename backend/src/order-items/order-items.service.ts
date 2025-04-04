@@ -44,7 +44,7 @@ export class OrderItemsService {
   //   return `This action updates a #${id} orderItem`;
   // }
 
-  remove(id: number) {
-    return `This action removes a #${id} orderItem`;
+  async remove(id: number) {
+    return this.orderItemService.delete(id);
   }
 }

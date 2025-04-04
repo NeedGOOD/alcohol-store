@@ -1,0 +1,101 @@
+.scrollElement {
+  display: flex;
+  flex-direction: column;
+  max-height: 200px;
+  overflow-y: auto;
+}
+.filterBlock {
+  padding-inline: 20px;
+  width: 10%;
+}
+.productTable {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+  width: 40%;
+  padding: 20px;
+  grid-template-rows: auto;
+}
+
+.productCard {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.productCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.productImage {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+}
+
+.productInfo {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.productLabel {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.productBrand,
+.productCountry,
+.productVolume,
+.productDurability {
+  font-size: 14px;
+  color: #777;
+  margin: 5px 0;
+}
+.productCost {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.productLabel:hover {
+  color: #3498db;
+}
+.catalogPage {
+  display: flex;
+  padding-top: 50px;
+  justify-content: center;
+}
+hr {
+  border: none;
+  border-top: 1px dotted black;
+  height: 1px;
+  width: 100%;
+  background: transparent;
+}
+hr.specialDivider {
+  border: none;
+  border-top: 1px dotted black;
+  height: 1px;
+  background: transparent;
+}
+.contentBlock {
+  display: flex;
+  align-items: center;
+}
+.value {
+  margin-left: 10px;
+  font-weight: bold;
+  color: #333;
+}

@@ -1,7 +1,8 @@
 import "./catalog.css";
 import React, { useState, useEffect } from "react";
 import "../../style.css";
-import { Slider, Collapse, Checkbox, Button } from "antd";
+import { Slider, Collapse, Checkbox, Button, Descriptions } from "antd";
+import { Link } from "react-router-dom";
 
 const { Panel } = Collapse;
 interface Alcohol {
@@ -121,7 +122,6 @@ function Catalog() {
               <span>{range[1]}</span>
             </div>
           </div>
-          
 
           <div className="collapseText">
             <Collapse
@@ -188,7 +188,7 @@ function Catalog() {
               brand: "awdawd",
               countries: "UA",
               volume: "0.5",
-              durability: "2%",
+              durability: "2",
               cost: "200",
             },
             {
@@ -197,7 +197,7 @@ function Catalog() {
               brand: "awdawd",
               countries: "UA",
               volume: "0.5",
-              durability: "2%",
+              durability: "2",
               cost: "200",
             },
             {
@@ -206,7 +206,7 @@ function Catalog() {
               brand: "awdawd",
               countries: "UA",
               volume: "0.5",
-              durability: "2%",
+              durability: "2",
               cost: "200",
             },
             {
@@ -215,7 +215,7 @@ function Catalog() {
               brand: "awdawd",
               countries: "UA",
               volume: "0.5",
-              durability: "2%",
+              durability: "2",
               cost: "200",
             },
             {
@@ -224,7 +224,7 @@ function Catalog() {
               brand: "awdawd",
               countries: "UA",
               volume: "0.5",
-              durability: "2%",
+              durability: "2",
               cost: "200",
             },
             {
@@ -233,7 +233,7 @@ function Catalog() {
               brand: "awdawd",
               countries: "UA",
               volume: "0.5",
-              durability: "2%",
+              durability: "2",
               cost: "200",
             },
             {
@@ -242,7 +242,7 @@ function Catalog() {
               brand: "awdawd",
               countries: "UA",
               volume: "0.5",
-              durability: "2%",
+              durability: "2",
               cost: "200",
             },
             {
@@ -251,7 +251,7 @@ function Catalog() {
               brand: "awdawd",
               countries: "UA",
               volume: "0.5",
-              durability: "2%",
+              durability: "2",
               cost: "200",
             },
             {
@@ -260,37 +260,50 @@ function Catalog() {
               brand: "awdawd",
               countries: "UA",
               volume: "0.5",
-              durability: "2%",
+              durability: "2",
               cost: "200",
+              Descriptions: `Jack Daniel's – один із найвідоміших американських брендів
+віскі у світі. Бренд, що має понад півтора століття історії.
+Винокурня була заснована в 1866 році в Лінчбурзі, штат
+Теннессі, і стала першою офіційно зареєстрованою винокурнею в
+США. Її засновник, Джаспер Ньютон "Джек" Деніел, з самого
+початку поставив собі за мету створити віскі з бездоганною
+якістю, що відрізняється від усього іншого віскі на ринку.`,
             },
           ].map((item, index) => (
-            <div className="productCard" key={index}>
-              <img
-                src={item.img}
-                alt={item.type_alcohol}
-                className="productImage"
-              />
-              <div className="productInfo">
-                <p className="productLabel">
-                  {item.type_alcohol} {item.brand} продукт {item.volume} л{" "}
-                  {item.durability}
-                </p>
-                <p className="productCost">{item.cost} грн</p>
-                <Button color="danger" variant="solid">
-                  Додати в корзину
-                </Button>
-                <p className="productCountry">
-                  Країна розробника:{" "}
-                  <span className="dots">{item.countries}</span>
-                </p>
-                <p className="productVolume">
-                  Об'єм: <span className="dots">{item.volume} л</span>
-                </p>
-                <p className="productDurability">
-                  Міцність: <span className="dots">{item.durability}</span>
-                </p>
+            <Link
+              to="product"
+              style={{ textDecoration: "none" }}
+              state={{ item }}
+            >
+              <div className="productCard" key={index}>
+                <img
+                  src={item.img}
+                  alt={item.type_alcohol}
+                  className="productImage"
+                />
+                <div className="productInfo">
+                  <p className="productLabel">
+                    {item.type_alcohol} {item.brand} продукт {item.volume} л{" "}
+                    {item.durability}
+                  </p>
+                  <p className="productCost">{item.cost} грн</p>
+                  <Button color="danger" variant="solid">
+                    Додати в корзину
+                  </Button>
+                  <p className="productCountry">
+                    Країна розробника:{" "}
+                    <span className="dots">{item.countries}</span>
+                  </p>
+                  <p className="productVolume">
+                    Об'єм: <span className="dots">{item.volume} л</span>
+                  </p>
+                  <p className="productDurability">
+                    Міцність: <span className="dots">{item.durability}</span>
+                  </p>
+                </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

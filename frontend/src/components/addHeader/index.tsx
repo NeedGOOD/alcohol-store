@@ -9,6 +9,7 @@ import {
 } from "@ant-design/icons";
 import "../../style.css";
 import { Avatar, Input, Modal, Button } from "antd";
+import AuthModal from "../addAuthPage";
 
 const { Search } = Input;
 type Product = {
@@ -24,6 +25,7 @@ type Product = {
 
 function Header() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [visible, setVisible] = useState<boolean>(false);
   const [product, setProduct] = useState([
     {
       item_code: "1238123",
@@ -75,9 +77,9 @@ function Header() {
           <img src="/img/logo.png" alt="Logo" id="Logo" />
           <div style={{ display: "flex", alignItems: "center", gap: "30px" }}>
             <div
-              style={{ borderRight: "1px solid #ccc", paddingRight: "20px" }}
+              style={{ borderRight: "1px solid #ccc", paddingRight: "20px", cursor: "pointer" }}
             >
-              <Avatar size={64} icon={<UserOutlined />} />
+              <Avatar size={64} icon={<UserOutlined />} onClick={() => setVisible(true)}/>
             </div>
             <div style={{ fontSize: "50px" }}>
               <ShoppingCartOutlined onClick={showModal} />
@@ -184,6 +186,7 @@ function Header() {
           </div>
         </div>
       </Modal>
+      <AuthModal visible={visible} onClose={() => setVisible(false)} />
     </div>
   );
 }

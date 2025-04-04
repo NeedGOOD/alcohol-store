@@ -8,6 +8,7 @@ import Header from "./components/addHeader";
 import Home from "./components/addHomePage";
 import Footer from "./components/addFooter";
 import Catalog from "./components/addCatalogPage"
+import Product from "./components/addProductPage";
 
 const App: React.FC = () => {
   return (
@@ -16,6 +17,7 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/catalog" element={<Catalog />} />
+        <Route path="/catalog/product" element={<Product />} />
         {/* <Route path="/product/:id" element={<Product />} /> */}
         {/* <Route path="/cart" element={<Cart />} /> */}
         {/* <Route path="/login" element={<Login />} /> */}

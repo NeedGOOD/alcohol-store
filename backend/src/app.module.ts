@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { OrdersModule } from './orders/orders.module';
 import { OrderItemsModule } from './order-items/order-items.module';
 import { AlcoholModule } from './alcohol/alcohol.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -15,7 +16,8 @@ import { AlcoholModule } from './alcohol/alcohol.module';
     DatabaseModule,
     OrdersModule,
     OrderItemsModule,
-    AlcoholModule
+    AlcoholModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

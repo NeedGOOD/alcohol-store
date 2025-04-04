@@ -1,9 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAlcoholDto } from './dto/create-alcohol.dto';
-import { UpdateAlcoholDto } from './dto/update-alcohol.dto';
+// import { UpdateAlcoholDto } from './dto/update-alcohol.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Alcohol } from './entities/alcohol.entity';
 import { Repository } from 'typeorm';
+import { FilterAlcoholDto } from './dto/filter-alcohol.dto';
 
 @Injectable()
 export class AlcoholService {
@@ -33,9 +34,21 @@ export class AlcoholService {
     }
   }
 
-  update(id: number, updateAlcoholDto: UpdateAlcoholDto) {
-    return `This action updates a #${id} alcohol`;
+  async findAlcoholByFilter(filterAlcoholDto: FilterAlcoholDto) {
+    const where: FilterAlcoholDto = { ...filterAlcoholDto };
+
+    Object.keys(where).forEach(key => where[key] === undefined && delete where[key]);
+
+    try {
+      return await this.alcoholRepository.find({ where });
+    } catch (error) {
+      throw new NotFoundException('Alcohol not found.');
+    }
   }
+
+  // update(id: number, updateAlcoholDto: UpdateAlcoholDto) {
+  //   return `This action updates a #${id} alcohol`;
+  // }
 
   remove(id: number) {
     return `This action removes a #${id} alcohol`;

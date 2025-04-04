@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { AlcoholService } from './alcohol.service';
 import { CreateAlcoholDto } from './dto/create-alcohol.dto';
-import { UpdateAlcoholDto } from './dto/update-alcohol.dto';
+import { FilterAlcoholDto } from './dto/filter-alcohol.dto';
+// import { UpdateAlcoholDto } from './dto/update-alcohol.dto';
 
 @Controller('alcohol')
 export class AlcoholController {
@@ -17,15 +18,20 @@ export class AlcoholController {
     return this.alcoholService.findAll();
   }
 
+  @Get('filter')
+  findAlcoholByFilter(@Query() filterAlcoholDto: FilterAlcoholDto) {
+    return this.alcoholService.findAlcoholByFilter(filterAlcoholDto);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.alcoholService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAlcoholDto: UpdateAlcoholDto) {
-    return this.alcoholService.update(+id, updateAlcoholDto);
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateAlcoholDto: UpdateAlcoholDto) {
+  //   return this.alcoholService.update(+id, updateAlcoholDto);
+  // }
 
   @Delete(':id')
   remove(@Param('id') id: string) {

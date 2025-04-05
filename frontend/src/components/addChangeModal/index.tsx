@@ -30,6 +30,7 @@ const EditUserData: React.FC<EditUserDataProps> = ({
       const response = await axios.patch(`/users/${userData.id}`, values);
       if (response.status === 200) {
         message.success("Дані успішно оновлено");
+        window.location.reload();
         onClose();
       }
     } catch (error) {

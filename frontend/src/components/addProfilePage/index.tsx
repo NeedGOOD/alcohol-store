@@ -31,6 +31,7 @@ const Profile: React.FC = () => {
   const userCookie = cookie.find((row) => row.startsWith("token="));
   const [data, setData] = useState<AnyObject>({});
   const [visiblePasswordChange, setVisiblePasswordChange] = useState(false);
+  const [visibleInfoChange, setVisibleInfoChange] = useState(false);
 
   const handleMenuClick = (e: { key: string }) => {
     setSelectedKey(e.key);
@@ -63,6 +64,13 @@ const Profile: React.FC = () => {
 
   const closeModalPasswordChange = () => {
     setVisiblePasswordChange(false);
+  };
+  const showModalInfoChange = () => {
+    setVisibleInfoChange(true);
+  };
+
+  const closeModalInfoChange = () => {
+    setVisibleInfoChange(false);
   };
 
   const renderContent = () => {
@@ -113,7 +121,7 @@ const Profile: React.FC = () => {
                   <Button danger onClick={showModalPasswordChange}>
                     Оновити пароль
                   </Button>
-                  <Button danger>Змінити данні</Button>
+                  <Button danger onClick={showModalInfoChange}>Змінити данні</Button>
                 </div>
               </Panel>
             </Collapse>
@@ -189,7 +197,7 @@ const Profile: React.FC = () => {
         onClose={closeModalPasswordChange}
         id={data?.id}
       />
-      <EditUserData visible={false} onClose={() => {}} userData={data}/>
+      <EditUserData visible={visibleInfoChange} onClose={closeModalInfoChange} userData={data}/>
     </Layout>
   );
 };

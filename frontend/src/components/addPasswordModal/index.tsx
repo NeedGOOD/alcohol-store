@@ -83,7 +83,7 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
         </Form.Item>
 
         <Form.Item
-          label="Підтвердження нового пароля"
+          label="Підтвердження нового пароля!"
           name="confirmPassword"
           rules={[
             {

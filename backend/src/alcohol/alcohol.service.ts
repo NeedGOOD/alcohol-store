@@ -3,7 +3,7 @@ import { CreateAlcoholDto } from './dto/create-alcohol.dto';
 // import { UpdateAlcoholDto } from './dto/update-alcohol.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Alcohol } from './entities/alcohol.entity';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, In, Repository } from 'typeorm';
 import { FilterAlcoholDto } from './dto/filter-alcohol.dto';
 
 @Injectable()
@@ -35,9 +35,20 @@ export class AlcoholService {
   }
 
   async findAlcoholByFilter(filterAlcoholDto: FilterAlcoholDto) {
-    const where: FilterAlcoholDto = { ...filterAlcoholDto };
+    const where: FindOptionsWhere<Alcohol> = {};
 
-    Object.keys(where).forEach(key => where[key] === undefined && delete where[key]);
+    // Object.keys(where).forEach(key => where[key] === undefined && delete where[key]);
+
+    Object.entries(filterAlcoholDto).forEach(([key, value]) => {
+      if (value === undefined) return;
+
+      // масив → In()
+      if (Array.isArray(value)) {
+        where[key] = In(value);
+      } else {
+        where[key] = value;
+      }
+    });
 
     try {
       return await this.alcoholRepository.find({ where });

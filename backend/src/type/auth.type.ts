@@ -1,3 +1,8 @@
+export type RegisInput = {
+  userId: number;
+  email: string;
+};
+
 export type AuthInput = {
   email: string;
   password: string;

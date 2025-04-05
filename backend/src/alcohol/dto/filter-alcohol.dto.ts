@@ -1,10 +1,9 @@
-import { PartialType } from "@nestjs/mapped-types";
-import { CreateAlcoholDto } from "./create-alcohol.dto";
 import { IsBoolean, IsEnum, IsNumber, IsOptional, IsString } from "class-validator";
 import { Countries } from "src/enums/countries.enum";
 import { TypeAlcohol } from "src/enums/typeAlcohol.enum";
+import { Transform } from "class-transformer";
 
-export class FilterAlcoholDto extends PartialType(CreateAlcoholDto) {
+export class FilterAlcoholDto {
   @IsString()
   @IsOptional()
   item_code?: string;
@@ -13,21 +12,25 @@ export class FilterAlcoholDto extends PartialType(CreateAlcoholDto) {
   @IsOptional()
   brand?: string | undefined;
 
-  @IsEnum(Countries)
+  @IsEnum(Countries, { each: true })
   @IsOptional()
-  countries?: Countries | undefined;
+  @Transform(({ value }) => Array.isArray(value) ? value : [value])
+  countries?: Countries[] | undefined;
 
-  @IsEnum(TypeAlcohol)
+  @IsEnum(TypeAlcohol, { each: true })
   @IsOptional()
-  type_alcohol?: TypeAlcohol | undefined;
+  @Transform(({ value }) => Array.isArray(value) ? value : [value])
+  type_alcohol?: TypeAlcohol[] | undefined;
 
-  @IsNumber({ maxDecimalPlaces: 2 })
+  @IsNumber({ maxDecimalPlaces: 2 }, { each: true })
   @IsOptional()
-  volume?: number | undefined;
+  @Transform(({ value }) => Array.isArray(value) ? value : [value])
+  volume?: number[] | undefined;
 
-  @IsNumber({ maxDecimalPlaces: 2 })
+  @IsNumber({ maxDecimalPlaces: 2 }, { each: true })
   @IsOptional()
-  durability?: number | undefined;
+  @Transform(({ value }) => Array.isArray(value) ? value : [value])
+  durability?: number[] | undefined;
 
   @IsBoolean()
   @IsOptional()

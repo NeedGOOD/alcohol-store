@@ -1,14 +1,21 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { AuthInput, AuthResult, SignIn } from 'src/type/auth.type';
+import { AuthInput, AuthResult, RegisInput, SignIn } from 'src/type/auth.type';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class AuthService {
   constructor(
+    @Inject(forwardRef(() => UsersService))
     private readonly userService: UsersService,
     private readonly jwtService: JwtService,
   ) { }
+
+  async register(input: RegisInput): Promise<string> {
+    const result = this.signIn(input);
+
+    return (await result).accessToken;
+  }
 
   async authenticate(input: AuthInput): Promise<AuthResult> {
     const user = await this.validateUser(input);

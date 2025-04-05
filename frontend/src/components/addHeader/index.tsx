@@ -1,5 +1,5 @@
 import "./header.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import {
   UserOutlined,
@@ -26,6 +26,10 @@ type Product = {
 function Header() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [visible, setVisible] = useState<boolean>(false);
+  const navigate = useNavigate();
+  
+  const cookie = document.cookie.split("; ");
+  const userCookie = cookie.find((row) => row.startsWith("token="));
   const [product, setProduct] = useState([
     {
       item_code: "1238123",
@@ -48,7 +52,6 @@ function Header() {
       cost: "8900",
     },
   ]);
-
 
   const calculateTotalCost = (products: Product[]): number => {
     return products.reduce((total, product) => {
@@ -77,9 +80,24 @@ function Header() {
           <img src="/img/logo.png" alt="Logo" id="Logo" />
           <div style={{ display: "flex", alignItems: "center", gap: "30px" }}>
             <div
-              style={{ borderRight: "1px solid #ccc", paddingRight: "20px", cursor: "pointer" }}
+              style={{
+                borderRight: "1px solid #ccc",
+                paddingRight: "20px",
+                cursor: "pointer",
+              }}
             >
-              <Avatar size={64} icon={<UserOutlined />} onClick={() => setVisible(true)}/>
+              <Avatar
+                size={86}
+                icon={<UserOutlined style={{ color: "black" }} />}
+                style={{ backgroundColor: "transparent" }}
+                onClick={() => {
+                  if(!userCookie){
+                    setVisible(true);
+                  }else{
+                    navigate("/profile");
+                  }
+                }}
+              />
             </div>
             <div style={{ fontSize: "50px" }}>
               <ShoppingCartOutlined onClick={showModal} />

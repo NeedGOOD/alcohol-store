@@ -19,11 +19,6 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
     try {
       const values = await form.validateFields();
       const { oldPassword, newPassword, confirmPassword } = values;
-
-      if (newPassword !== confirmPassword) {
-        message.error("Паролі не співпадають");
-        return;
-      }
       await axios.patch(`/users/update-password/${id}`, {
         oldPassword,
         newPassword,

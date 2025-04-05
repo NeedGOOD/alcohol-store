@@ -1,7 +1,7 @@
 import "./catalog.css";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import "../../style.css";
-import { Slider, Collapse, Checkbox, Button, Breadcrumb } from "antd";
+import { Slider, Collapse, Checkbox, Button, Breadcrumb, message } from "antd";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
@@ -13,6 +13,7 @@ interface Alcohol {
 
 function Catalog() {
   const [selectedType, setSelectedType] = useState<Record<string, boolean>>({});
+  // const [cart, setCart] = useState<any[]>([]);
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const type = searchParams.get("type");
@@ -49,7 +50,6 @@ function Catalog() {
     };
     fetchData();
   }, []);
-
 
   const alcohols: Alcohol[] = [
     { label: "Віскі" },
@@ -118,6 +118,21 @@ function Catalog() {
       ...prev,
       [label]: !prev[label],
     }));
+  };
+  const addCartProduct = (item: any) => {
+    const stored = localStorage.getItem("cart");
+    const currentCart: any[] = stored ? JSON.parse(stored) : [];
+
+    const alreadyInCart = currentCart.some((product) => product.id === item.id);
+
+    if (alreadyInCart) {
+      message.error("Товар вже в корзині!");
+      return;
+    }
+
+    const updatedCart = [...currentCart, item];
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    window.location.reload();
   };
 
   return (
@@ -229,12 +244,12 @@ function Catalog() {
         </div>
         <div className="productTable">
           {data.map((item, index) => (
-            <Link
-              to="product"
-              style={{ textDecoration: "none" }}
-              state={{ item }}
-            >
-              <div className="productCard" key={index}>
+            <div className="productCard" key={index}>
+              <Link
+                to="product"
+                style={{ textDecoration: "none" }}
+                state={{ item }}
+              >
                 <img
                   src={item.img}
                   alt={item.type_alcohol}
@@ -246,9 +261,6 @@ function Catalog() {
                     {item.durability}
                   </p>
                   <p className="productCost">{item.cost} грн</p>
-                  <Button color="danger" variant="solid">
-                    Додати в корзину
-                  </Button>
                   <p className="productCountry">
                     Країна розробника:{" "}
                     <span className="dots">{item.countries}</span>
@@ -260,8 +272,18 @@ function Catalog() {
                     Міцність: <span className="dots">{item.durability}</span>
                   </p>
                 </div>
-              </div>
-            </Link>
+              </Link>
+              <Button
+                color="danger"
+                variant="solid"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  addCartProduct(item);
+                }}
+              >
+                Додати в корзину
+              </Button>
+            </div>
           ))}
         </div>
       </div>

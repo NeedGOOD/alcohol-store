@@ -36,11 +36,11 @@ const AuthModal: React.FC<AuthModalProps> = ({ visible, onClose }) => {
         email: values.email,
         password: values.password,
       });
+      message.success("Успішний вхід!");
       document.cookie = `token=${response.data.accessToken}; path=/; max-age=3600`;
       onClose();
-      message.success("Успішний вхід!");
     } catch (error) {
-      message.error("Помилка авторизації!");
+      alert("Помилка авторизації!");
     }
   };
   return (
@@ -50,7 +50,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ visible, onClose }) => {
           <Form layout="vertical" onFinish={handleSubmitLogin}>
             <Form.Item
               label="Електронна пошта"
-              name="emailOrPhone"
+              name="email"
               rules={[
                 { required: true, message: "Введіть пошту" },
                 { type: "email", message: "Невірний формат пошти" },

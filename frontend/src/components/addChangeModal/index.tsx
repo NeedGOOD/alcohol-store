@@ -2,19 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Form, Input, Button, message, Modal } from "antd";
 import axios from "axios";
 
-interface UserData {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-  role: string;
-  orders: any[];
-}
-
 interface EditUserDataProps {
   visible: boolean;
   onClose: () => void;
-  userData: UserData;
+  userData: Record<string, any>;
 }
 
 const EditUserData: React.FC<EditUserDataProps> = ({

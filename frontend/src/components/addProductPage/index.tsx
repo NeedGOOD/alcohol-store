@@ -21,15 +21,19 @@ const { Title, Text, Paragraph } = Typography;
 function Product() {
   const [quantity, setQuantity] = useState(1);
   const location = useLocation();
-  const { item } = location.state || {};
-  console.log("Дані про товар:", item);
+  const { item } = location.state || {}; // Обрабатываем случай, когда item может быть undefined
+
+  if (!item) {
+    return <div>Товар не найден.</div>; // Выводим сообщение, если нет данных о товаре
+  }
+
   return (
     <div style={{ display: "flex", justifyContent: "center" }}>
       <Row justify="center" style={{ padding: 20, width: "70%" }}>
         <Col>
           <Image
-            alt={item?.type_alcohol || ""}
-            src={item?.img || ""}
+            alt={item.type_alcohol || "Изображение товара"}
+            src={item.img || ""}
             width={500}
           />
         </Col>
@@ -38,23 +42,28 @@ function Product() {
             {item.type_alcohol} {item.brand} продукт {item.volume} л{" "}
             {item.durability}
           </Title>
-          {item?.availability ? (<Text type="success">✅ Є в наявності</Text>) : (<Text type="danger">❌ Немає в наявності</Text>)}
+          {item.availability ? (
+            <Text type="success">✅ Є в наявності</Text>
+          ) : (
+            <Text type="danger">❌ Немає в наявності</Text>
+          )}
           <br />
           <Title level={2} style={{ marginTop: 10 }}>
-            {item?.cost * quantity} грн
+            {item.cost * quantity} грн
           </Title>
-          <Text delete>{quantity > 1 ? item?.cost + " грн" : ""}</Text>
+          <Text delete>{quantity > 1 ? item.cost + " грн" : ""}</Text>
 
           <div style={{ marginTop: 10 }}>
-            <Text type="secondary">від 2 шт: {item?.cost * 2} грн</Text> <br />
-            <Text type="secondary">від 3 шт: {item?.cost * 3} грн</Text>
+            <Text type="secondary">від 2 шт: {item.cost * 2} грн</Text> <br />
+            <Text type="secondary">від 3 шт: {item.cost * 3} грн</Text>
           </div>
 
           <div style={{ marginTop: 20 }}>
             <InputNumber
               min={1}
+              max={100}
               defaultValue={1}
-              onChange={(value) => {
+              onChange={(value: any) => {
                 if (value !== null) {
                   setQuantity(value);
                 }
@@ -72,7 +81,7 @@ function Product() {
           </div>
 
           <Badge
-            status="warning"
+            status="warning" // Ensure this value is valid for the Badge component
             text="Дизайн пляшки та етикетки може відрізнятися від фактичного."
             style={{ marginTop: 20, display: "block" }}
           />
@@ -84,7 +93,7 @@ function Product() {
             <Text type="secondary">Безкоштовно від 2000 грн*</Text>
           </div>
         </Col>
-        <Col xs={15} md={20}>
+        <Col>
           <div style={{ padding: "20px 50px" }}>
             <Tabs defaultActiveKey="1" centered>
               <TabPane tab="Характеристики" key="1">
@@ -95,31 +104,31 @@ function Product() {
                   labelStyle={{ width: 250 }}
                 >
                   <Descriptions.Item label="Тип алкоголя">
-                    {item?.type_alcohol}
+                    {item.type_alcohol}
                   </Descriptions.Item>
                   <Descriptions.Item label="Бренд">
-                    {item?.brand}
+                    {item.brand}
                   </Descriptions.Item>
                   <Descriptions.Item label="Країна виробництва">
-                    {item?.countries}
+                    {item.countries}
                   </Descriptions.Item>
                   <Descriptions.Item label="Об'єм">
-                    {item?.volume} л
+                    {item.volume} л
                   </Descriptions.Item>
                   <Descriptions.Item label="Міцність">
-                    {item?.durability} %
+                    {item.durability} %
                   </Descriptions.Item>
                   <Descriptions.Item label="Ціна">
-                    {item?.cost} грн
+                    {item.cost} грн
                   </Descriptions.Item>
                 </Descriptions>
               </TabPane>
               <TabPane tab="Опис" key="2">
                 <Title level={3}>
-                  {item?.brand} – легендарний бренд {item?.type_alcohol}
+                  {item.brand} – легендарний бренд {item.type_alcohol}
                 </Title>
                 <Paragraph style={{ fontSize: 30 }}>
-                  {item?.description || "Опис товару не доданий"}
+                  {item.description || "Опис товару не доданий"}
                 </Paragraph>
               </TabPane>
               <TabPane tab="Точки видачі" key="3">

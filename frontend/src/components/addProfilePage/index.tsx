@@ -38,11 +38,17 @@ const Profile: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("/auth/me", {
+        const responseMe = await axios.get("/auth/me", {
           headers: {
             Authorization: `Bearer ${userCookie?.split("=")[1]}`,
           },
         });
+        const response = await axios.get(`/users/${responseMe.data.userId}`, {
+          headers: {
+            Authorization: `Bearer ${userCookie?.split("=")[1]}`,
+          },
+        });
+        console.log(response.data);
         setData(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -50,7 +56,7 @@ const Profile: React.FC = () => {
     };
     fetchData();
   }, []);
-  
+
   const showModalPasswordChange = () => {
     setVisiblePasswordChange(true);
   };
@@ -104,7 +110,9 @@ const Profile: React.FC = () => {
               </Panel>
               <Panel header="Безпека" key="4">
                 <div style={{ display: "flex", gap: "10px" }}>
-                  <Button danger onClick={showModalPasswordChange}>Оновити пароль</Button>
+                  <Button danger onClick={showModalPasswordChange}>
+                    Оновити пароль
+                  </Button>
                   <Button danger>Змінити данні</Button>
                 </div>
               </Panel>
@@ -176,9 +184,12 @@ const Profile: React.FC = () => {
       <Content style={{ padding: "40px", background: "#f5f5f5" }}>
         {renderContent()}
       </Content>
-      <ChangePasswordModal visible={visiblePasswordChange} onClose={closeModalPasswordChange} id={data?.id} />
-      {/* <EditUserData visible={false} onClose={() => {}} /> */}
-      
+      <ChangePasswordModal
+        visible={visiblePasswordChange}
+        onClose={closeModalPasswordChange}
+        id={data?.id}
+      />
+      <EditUserData visible={false} onClose={() => {}} userData={data}/>
     </Layout>
   );
 };

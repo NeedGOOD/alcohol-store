@@ -1,9 +1,10 @@
 import "./catalog.css";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import "../../style.css";
-import { Slider, Collapse, Checkbox, Button, Breadcrumb } from "antd";
+import { Slider, Collapse, Checkbox, Button, Breadcrumb, message } from "antd";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import axios from "axios";
 
 const { Panel } = Collapse;
 interface Alcohol {
@@ -12,9 +13,11 @@ interface Alcohol {
 
 function Catalog() {
   const [selectedType, setSelectedType] = useState<Record<string, boolean>>({});
+  // const [cart, setCart] = useState<any[]>([]);
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const type = searchParams.get("type");
+  const [data, setData] = useState<any[]>([]);
   const [selectedVolume, setSelectedVolume] = useState<Record<string, boolean>>(
     {}
   );
@@ -36,6 +39,17 @@ function Catalog() {
       setSelectedType({ [type]: true });
     }
   }, [type]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("/alcohol");
+        setData(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, []);
 
   const alcohols: Alcohol[] = [
     { label: "Віскі" },
@@ -105,6 +119,21 @@ function Catalog() {
       [label]: !prev[label],
     }));
   };
+  const addCartProduct = (item: any) => {
+    const stored = localStorage.getItem("cart");
+    const currentCart: any[] = stored ? JSON.parse(stored) : [];
+
+    const alreadyInCart = currentCart.some((product) => product.id === item.id);
+
+    if (alreadyInCart) {
+      message.error("Товар вже в корзині!");
+      return;
+    }
+
+    const updatedCart = [...currentCart, item];
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    window.location.reload();
+  };
 
   return (
     <>
@@ -120,22 +149,22 @@ function Catalog() {
       >
         <h1>{type}</h1>
         {/* {type && ( */}
-          <Breadcrumb
-            style={{
-              margin: "16px 0",
-            }}
-            items={[
-              {
-                title: <Link to="/">Головна</Link>,
-              },
-              {
-                title: <Link to="/catalog">Каталог</Link>,
-              },
-              {
-                title: type,
-              },
-            ]}
-          />
+        <Breadcrumb
+          style={{
+            margin: "16px 0",
+          }}
+          items={[
+            {
+              title: <Link to="/">Головна</Link>,
+            },
+            {
+              title: <Link to="/catalog">Каталог</Link>,
+            },
+            {
+              title: type,
+            },
+          ]}
+        />
         {/* )} */}
       </div>
       <div className="catalogPage">
@@ -214,102 +243,13 @@ function Catalog() {
           </div>
         </div>
         <div className="productTable">
-          {[
-            {
-              img: "/img/web-pack/whiskey-with-bg.jpg",
-              type_alcohol: "Віскі",
-              brand: "awdawd",
-              countries: "UA",
-              volume: "0.5",
-              durability: "2",
-              cost: "200",
-            },
-            {
-              img: "/img/web-pack/brendi-with-bg.jpg",
-              type_alcohol: "Бренді",
-              brand: "awdawd",
-              countries: "UA",
-              volume: "0.5",
-              durability: "2",
-              cost: "200",
-            },
-            {
-              img: "/img/web-pack/vodka-with-bg.jpg",
-              type_alcohol: "Горілка",
-              brand: "awdawd",
-              countries: "UA",
-              volume: "0.5",
-              durability: "2",
-              cost: "200",
-            },
-            {
-              img: "/img/web-pack/rum-with-bg.jpg",
-              type_alcohol: "Ром",
-              brand: "awdawd",
-              countries: "UA",
-              volume: "0.5",
-              durability: "2",
-              cost: "200",
-            },
-            {
-              img: "/img/web-pack/tequila-with-bg.jpg",
-              type_alcohol: "Текіла",
-              brand: "awdawd",
-              countries: "UA",
-              volume: "0.5",
-              durability: "2",
-              cost: "200",
-            },
-            {
-              img: "/img/web-pack/wine-with-bg.jpg",
-              type_alcohol: "Вино",
-              brand: "awdawd",
-              countries: "UA",
-              volume: "0.5",
-              durability: "2",
-              cost: "200",
-            },
-            {
-              img: "/img/web-pack/gin-with-bg.jpg",
-              type_alcohol: "Джин",
-              brand: "awdawd",
-              countries: "UA",
-              volume: "0.5",
-              durability: "2",
-              cost: "200",
-            },
-            {
-              img: "/img/web-pack/liquer-with-bg.jpg",
-              type_alcohol: "Лікер",
-              brand: "awdawd",
-              countries: "UA",
-              volume: "0.5",
-              durability: "2",
-              cost: "200",
-            },
-            {
-              img: "/img/web-pack/beer-with-bg.jpg",
-              type_alcohol: "Пиво",
-              brand: "awdawd",
-              countries: "UA",
-              volume: "0.5",
-              durability: "2",
-              cost: "200",
-              Descriptions: `Jack Daniel's – один із найвідоміших американських брендів
-віскі у світі. Бренд, що має понад півтора століття історії.
-Винокурня була заснована в 1866 році в Лінчбурзі, штат
-Теннессі, і стала першою офіційно зареєстрованою винокурнею в
-США. Її засновник, Джаспер Ньютон "Джек" Деніел, з самого
-початку поставив собі за мету створити віскі з бездоганною
-якістю, що відрізняється від усього іншого віскі на ринку.`,
-            },
-          ].map((item, index) => (
-            <Link
-              to="product"
-              style={{ textDecoration: "none" }}
-              state={{ item }}
-            >
-              <div className="productCard" key={index}>
+          {data.map((item, index) => (
+            <div className="productCard" key={index}>
+              <Link
+                to="product"
+                style={{ textDecoration: "none" }}
+                state={{ item }}
+              >
                 <img
                   src={item.img}
                   alt={item.type_alcohol}
@@ -321,9 +261,6 @@ function Catalog() {
                     {item.durability}
                   </p>
                   <p className="productCost">{item.cost} грн</p>
-                  <Button color="danger" variant="solid">
-                    Додати в корзину
-                  </Button>
                   <p className="productCountry">
                     Країна розробника:{" "}
                     <span className="dots">{item.countries}</span>
@@ -335,8 +272,18 @@ function Catalog() {
                     Міцність: <span className="dots">{item.durability}</span>
                   </p>
                 </div>
-              </div>
-            </Link>
+              </Link>
+              <Button
+                color="danger"
+                variant="solid"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  addCartProduct(item);
+                }}
+              >
+                Додати в корзину
+              </Button>
+            </div>
           ))}
         </div>
       </div>

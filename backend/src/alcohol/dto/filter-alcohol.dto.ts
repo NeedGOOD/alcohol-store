@@ -24,11 +24,13 @@ export class FilterAlcoholDto {
 
   @IsNumber({ maxDecimalPlaces: 2 }, { each: true })
   @IsOptional()
+  @Transform(({ value }) => parseFloat(value))
   @Transform(({ value }) => Array.isArray(value) ? value : [value])
   volume?: number[] | undefined;
 
   @IsNumber({ maxDecimalPlaces: 2 }, { each: true })
   @IsOptional()
+  @Transform(({ value }) => parseFloat(value))
   @Transform(({ value }) => Array.isArray(value) ? value : [value])
   durability?: number[] | undefined;
 
@@ -38,7 +40,9 @@ export class FilterAlcoholDto {
 
   @IsNumber({ maxDecimalPlaces: 2 })
   @IsOptional()
-  cost?: number | undefined;
+  @Transform(({ value }) => parseFloat(value))
+  @Transform(({ value }) => Array.isArray(value) ? value : [value])
+  cost?: number[] | undefined;
 
   @IsString()
   @IsOptional()

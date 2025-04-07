@@ -8,11 +8,13 @@ import {
   Collapse,
   Button,
   message,
+  Empty
 } from "antd";
 import {
   UserOutlined,
   ShoppingCartOutlined,
   LogoutOutlined,
+  CloseOutlined,
 } from "@ant-design/icons";
 import axios from "axios";
 import { AnyObject } from "antd/es/_util/type";
@@ -23,6 +25,16 @@ import EditUserData from "../addChangeModal";
 const { Sider, Content } = Layout;
 const { Panel } = Collapse;
 const { Title, Text } = Typography;
+type Product = {
+  item_code: string;
+  img: string;
+  type_alcohol: string;
+  brand: string;
+  countries: string;
+  volume: string;
+  durability: string;
+  cost: string;
+};
 
 const Profile: React.FC = () => {
   const [selectedKey, setSelectedKey] = useState<string>("1");
@@ -32,6 +44,10 @@ const Profile: React.FC = () => {
   const [data, setData] = useState<AnyObject>({});
   const [visiblePasswordChange, setVisiblePasswordChange] = useState(false);
   const [visibleInfoChange, setVisibleInfoChange] = useState(false);
+  const [product, setProduct] = useState(() => {
+    const stored = localStorage.getItem("cart");
+    return stored ? JSON.parse(stored) : [];
+  });
 
   const handleMenuClick = (e: { key: string }) => {
     setSelectedKey(e.key);
@@ -121,7 +137,9 @@ const Profile: React.FC = () => {
                   <Button danger onClick={showModalPasswordChange}>
                     Оновити пароль
                   </Button>
-                  <Button danger onClick={showModalInfoChange}>Змінити данні</Button>
+                  <Button danger onClick={showModalInfoChange}>
+                    Змінити данні
+                  </Button>
                 </div>
               </Panel>
             </Collapse>
@@ -129,9 +147,36 @@ const Profile: React.FC = () => {
         );
       case "2":
         return (
-          <Card>
-            <Title level={4}>Мої замовлення</Title>
-            <Text type="secondary">Список замовлень тут...</Text>
+          <Card title="Мої замовлення">
+            {product.length > 0 ? (
+              product.map((item: any, index: number) => (
+                <div className="cartProduct" key={index}>
+                  <div id="cartProductImg">
+                    <img
+                      src={`/img/web-pack/${item?.type_alcohol.toLowerCase()}-with-bg.jpg`}
+                      alt={item.type_alcohol}
+                    />
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      width: "100%",
+                    }}
+                  >
+                    <p className="contentProduct">
+                      {item.type_alcohol} {item.brand} продукт {item.volume} л{" "}
+                      {item.durability}
+                    </p>
+                    <div>
+                      <p>x {item.cost} грн</p>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <Empty description="Кошик порожній" />
+            )}
           </Card>
         );
       default:
@@ -197,7 +242,11 @@ const Profile: React.FC = () => {
         onClose={closeModalPasswordChange}
         id={data?.id}
       />
-      <EditUserData visible={visibleInfoChange} onClose={closeModalInfoChange} userData={data}/>
+      <EditUserData
+        visible={visibleInfoChange}
+        onClose={closeModalInfoChange}
+        userData={data}
+      />
     </Layout>
   );
 };

@@ -14,6 +14,7 @@ import {
 } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import { useLocation } from "react-router-dom";
+import axios from "axios";
 
 const { TabPane } = Tabs;
 const { Title, Text, Paragraph } = Typography;
@@ -21,11 +22,27 @@ const { Title, Text, Paragraph } = Typography;
 function Product() {
   const [quantity, setQuantity] = useState(1);
   const location = useLocation();
-  const { item } = location.state || {}; // Обрабатываем случай, когда item может быть undefined
+  const { item } = location.state || {};
 
   if (!item) {
-    return <div>Товар не найден.</div>; // Выводим сообщение, если нет данных о товаре
+    return <div>Товар не найден.</div>;
   }
+
+  const addCartProduct = () => {
+    const stored = localStorage.getItem("cart");
+    const currentCart: any[] = stored ? JSON.parse(stored) : [];
+
+    const alreadyInCart = currentCart.some((product) => product.id === item.id);
+
+    if (alreadyInCart) {
+      alert("Товар вже в корзині!");
+      return;
+    }
+
+    const updatedCart = [...currentCart, item];
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    window.location.reload();
+  };
 
   return (
     <div style={{ display: "flex", justifyContent: "center" }}>
@@ -33,11 +50,14 @@ function Product() {
         <Col>
           <Image
             alt={item.type_alcohol || "Изображение товара"}
-            src={item.img || ""}
+            src={
+              `/img/web-pack/${item?.type_alcohol.toLowerCase()}-with-bg.jpg` ||
+              ``
+            }
             width={500}
           />
         </Col>
-        <Col xs={24} md={10} style={{ paddingLeft: 20 }}>
+        <Col xs={24} md={12} style={{ paddingLeft: 20 }}>
           <Title level={3}>
             {item.type_alcohol} {item.brand} продукт {item.volume} л{" "}
             {item.durability}
@@ -60,6 +80,7 @@ function Product() {
 
           <div style={{ marginTop: 20 }}>
             <InputNumber
+              name="count"
               min={1}
               max={100}
               defaultValue={1}
@@ -75,8 +96,9 @@ function Product() {
               icon={<ShoppingCartOutlined />}
               size="large"
               style={{ marginLeft: 10 }}
+              onClick={addCartProduct}
             >
-              Купити
+              Додати в корзину
             </Button>
           </div>
 
@@ -93,15 +115,15 @@ function Product() {
             <Text type="secondary">Безкоштовно від 2000 грн*</Text>
           </div>
         </Col>
-        <Col>
-          <div style={{ padding: "20px 50px" }}>
+        <Col xs={24} md={12}>
+          <div style={{ padding: "20px 50px", width: "100%" }}>
             <Tabs defaultActiveKey="1" centered>
               <TabPane tab="Характеристики" key="1">
                 <Descriptions
                   bordered
                   column={1}
                   style={{ marginTop: 20, width: "100%" }}
-                  labelStyle={{ width: 250 }}
+                  labelStyle={{ width: 350 }}
                 >
                   <Descriptions.Item label="Тип алкоголя">
                     {item.type_alcohol}

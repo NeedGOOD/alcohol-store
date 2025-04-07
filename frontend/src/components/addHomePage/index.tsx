@@ -79,17 +79,53 @@ function Home() {
         >
           <div className="alcoholBlock">
             {[
-              { img: "/img/web-pack/whiskey-with-bg.jpg", label: "Віскі" },
-              { img: "/img/web-pack/brendi-with-bg.jpg", label: "Бренді" },
-              { img: "/img/web-pack/vodka-with-bg.jpg", label: "Горілка" },
-              { img: "/img/web-pack/rum-with-bg.jpg", label: "Ром" },
-              { img: "/img/web-pack/tequila-with-bg.jpg", label: "Текіла" },
-              { img: "/img/web-pack/wine-with-bg.jpg", label: "Вино" },
-              { img: "/img/web-pack/gin-with-bg.jpg", label: "Джин" },
-              { img: "/img/web-pack/liquer-with-bg.jpg", label: "Лікер" },
-              { img: "/img/web-pack/beer-with-bg.jpg", label: "Пиво" },
+              {
+                img: "/img/web-pack/whiskey-with-bg.jpg",
+                label: "Віскі",
+                value: "Whiskey",
+              },
+              {
+                img: "/img/web-pack/brendi-with-bg.jpg",
+                label: "Бренді",
+                value: "Brandy",
+              },
+              {
+                img: "/img/web-pack/vodka-with-bg.jpg",
+                label: "Горілка",
+                value: "Vodka",
+              },
+              {
+                img: "/img/web-pack/rum-with-bg.jpg",
+                label: "Ром",
+                value: "Rum" ,
+              },
+              {
+                img: "/img/web-pack/tequila-with-bg.jpg",
+                label: "Текіла",
+                value: "Tequila",
+              },
+              {
+                img: "/img/web-pack/wines-with-bg.jpg",
+                label: "Вино",
+                value: "Wines",
+              },
+              {
+                img: "/img/web-pack/gin-with-bg.jpg",
+                label: "Джин",
+                value: "Gin",
+              },
+              {
+                img: "/img/web-pack/liquer-with-bg.jpg",
+                label: "Лікер",
+                value: "Liquor",
+              },
+              {
+                img: "/img/web-pack/beer-with-bg.jpg",
+                label: "Пиво",
+                value: "Beer",
+              },
             ].map((item) => (
-              <Link to={`/catalog?type=${item.label}`} key={item.label}>
+              <Link to={`/catalog?type=${item.value}`} key={item.label}>
                 <div className="table-cell">
                   <img src={item.img} alt={item.label} className="blockImg" />
                   <p id="alcoholTitle">{item.label}</p>

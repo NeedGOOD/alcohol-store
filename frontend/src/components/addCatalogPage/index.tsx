@@ -1,7 +1,15 @@
 import "./catalog.css";
 import React, { useState, useEffect, use } from "react";
 import "../../style.css";
-import { Slider, Collapse, Checkbox, Button, Breadcrumb, message } from "antd";
+import {
+  Slider,
+  Collapse,
+  Checkbox,
+  Button,
+  Breadcrumb,
+  message,
+  Empty,
+} from "antd";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
@@ -9,14 +17,26 @@ import axios from "axios";
 const { Panel } = Collapse;
 interface Alcohol {
   label: string;
+  value: string;
 }
 
+interface User {
+  email: string;
+  first_name: string;
+  id: number;
+  last_name: string;
+  orders: any[];
+  password: string;
+  role: string;
+}
 function Catalog() {
   const [selectedType, setSelectedType] = useState<Record<string, boolean>>({});
-  // const [cart, setCart] = useState<any[]>([]);
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const type = searchParams.get("type");
+  const cookie = document.cookie.split("; ");
+  const userCookie = cookie.find((row) => row.startsWith("token="));
+  const [user, setUser] = useState<User | null>(null);
   const [data, setData] = useState<any[]>([]);
   const [selectedVolume, setSelectedVolume] = useState<Record<string, boolean>>(
     {}
@@ -27,12 +47,28 @@ function Catalog() {
   const [selectedStrength, setSelectedStrength] = useState<
     Record<string, boolean>
   >({});
-  const [range, setRange] = useState<number[]>([500, 2300]);
 
-  const handleSliderChange = (value: number | number[]) => {
-    setRange(value as number[]);
-    console.log("Slider range:", value);
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const responseMe = await axios.get("/auth/me", {
+          headers: {
+            Authorization: `Bearer ${userCookie?.split("=")[1]}`,
+          },
+        });
+        const response = await axios.get(`/users/${responseMe.data.userId}`, {
+          headers: {
+            Authorization: `Bearer ${userCookie?.split("=")[1]}`,
+          },
+        });
+        console.log(response.data);
+        setUser(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, []);
 
   useEffect(() => {
     if (type) {
@@ -41,26 +77,69 @@ function Catalog() {
   }, [type]);
   useEffect(() => {
     const fetchData = async () => {
+      const params = new URLSearchParams();
+
+      if (type) {
+        params.append("type_alcohol", type);
+      }
+      if (selectedCountry) {
+        Object.entries(selectedCountry).forEach(([key, value]) => {
+          if (value) params.append("countries", key);
+        });
+      }
+
+      if (selectedType) {
+        Object.entries(selectedType).forEach(([key, value]) => {
+          if (value) params.append("type_alcohol", key);
+        });
+      }
+
+      if (selectedVolume) {
+        Object.entries(selectedVolume).forEach(([key, value]) => {
+          if (value) params.append("volume", key);
+        });
+      }
+
+      if (selectedStrength) {
+        Object.entries(selectedStrength).forEach(([key, value]) => {
+          if (value) params.append("durability", key);
+        });
+      }
+
       try {
-        const response = await axios.get("/alcohol");
+        const response = await axios.get(
+          `/alcohol/filter?${params.toString()}`
+        );
+        console.log("QAWDKQWDOKQWPDOQWDOKQWDOP");
         setData(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
+
     fetchData();
-  }, []);
+  }, [selectedCountry, selectedType, selectedVolume, selectedStrength]);
+
+  const deleteProduct = async (id: number) => {
+    try {
+      console.log(id);
+      await axios.delete(`/alcohol/${id}`);
+      window.location.reload();
+    } catch (error) {
+      alert("Помилка видалення!");
+    }
+  };
 
   const alcohols: Alcohol[] = [
-    { label: "Віскі" },
-    { label: "Бренді" },
-    { label: "Горілка" },
-    { label: "Ром" },
-    { label: "Текіла" },
-    { label: "Вино" },
-    { label: "Джин" },
-    { label: "Лікер" },
-    { label: "Пиво" },
+    { label: "Віскі", value: "Whiskey" },
+    { label: "Бренді", value: "Brandy" },
+    { label: "Горілка", value: "Vodka" },
+    { label: "Ром", value: "Rum" },
+    { label: "Текіла", value: "Tequila" },
+    { label: "Вино", value: "Wines" },
+    { label: "Джин", value: "Gin" },
+    { label: "Лікер", value: "Liquor" },
+    { label: "Пиво", value: "Beer" },
   ];
   const options = [
     { label: "0,5", value: "0.5" },
@@ -75,24 +154,24 @@ function Catalog() {
     { label: "4,5", value: "4.5" },
   ];
   const country = [
-    { label: "Україна", value: "UA" },
-    { label: "США", value: "US" },
-    { label: "Канада", value: "CA" },
-    { label: "Німеччина", value: "DE" },
-    { label: "Франція", value: "FR" },
-    { label: "Іспанія", value: "ES" },
-    { label: "Італія", value: "IT" },
-    { label: "Польща", value: "PL" },
-    { label: "Японія", value: "JP" },
-    { label: "Австралія", value: "AU" },
+    { label: "Україна", value: "Ukraine" },
+    { label: "США", value: "United States" },
+    { label: "Канада", value: "Canada" },
+    { label: "Німеччина", value: "Germany" },
+    { label: "Франція", value: "France" },
+    { label: "Іспанія", value: "Spain" },
+    { label: "Італія", value: "Italy" },
+    { label: "Польща", value: "Poland" },
+    { label: "Японія", value: "Japan" },
+    { label: "Австралія", value: "Australia" },
   ];
   const strength = [
     { label: "Безалкогольний (0%)", value: "0" },
-    { label: "Легкий (до 5%)", value: "5" },
-    { label: "Середній (до 10%)", value: "10" },
-    { label: "Міцний (до 20%)", value: "20" },
-    { label: "Дуже міцний (до 40%)", value: "40" },
-    { label: "Екстремальний (50% і більше)", value: "50" },
+    { label: "Легкий (5%)", value: "5" },
+    { label: "Середній (10%)", value: "10" },
+    { label: "Міцний (20%)", value: "20" },
+    { label: "Дуже міцний (40%)", value: "40" },
+    { label: "Екстремальний (50%)", value: "50" },
   ];
 
   const handleTypeChange = (label: string) => {
@@ -169,22 +248,6 @@ function Catalog() {
       </div>
       <div className="catalogPage">
         <div className="filterBlock">
-          <Slider
-            range
-            defaultValue={[500, 2300]}
-            min={0}
-            max={10000}
-            onChange={handleSliderChange}
-          />
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <p>Ціна:&nbsp;</p>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span>{range[0]}</span>
-              <span>&nbsp;-&nbsp;</span>
-              <span>{range[1]}</span>
-            </div>
-          </div>
-
           <div className="collapseText">
             <Collapse
               bordered={false}
@@ -195,8 +258,8 @@ function Catalog() {
                 <div className="scrollElement">
                   {alcohols.map((item) => (
                     <Checkbox
-                      checked={!!selectedType[item.label]}
-                      onChange={() => handleTypeChange(item.label)}
+                      checked={!!selectedType[item.value]}
+                      onChange={() => handleTypeChange(item.value)}
                     >
                       {item.label}
                     </Checkbox>
@@ -242,50 +305,68 @@ function Catalog() {
             </Collapse>
           </div>
         </div>
-        <div className="productTable">
-          {data.map((item, index) => (
-            <div className="productCard" key={index}>
-              <Link
-                to="product"
-                style={{ textDecoration: "none" }}
-                state={{ item }}
-              >
-                <img
-                  src={item.img}
-                  alt={item.type_alcohol}
-                  className="productImage"
-                />
-                <div className="productInfo">
-                  <p className="productLabel">
-                    {item.type_alcohol} {item.brand} продукт {item.volume} л{" "}
-                    {item.durability}
-                  </p>
-                  <p className="productCost">{item.cost} грн</p>
-                  <p className="productCountry">
-                    Країна розробника:{" "}
-                    <span className="dots">{item.countries}</span>
-                  </p>
-                  <p className="productVolume">
-                    Об'єм: <span className="dots">{item.volume} л</span>
-                  </p>
-                  <p className="productDurability">
-                    Міцність: <span className="dots">{item.durability}</span>
-                  </p>
+
+        {data.length > 0 ? (
+          <div className="productTable">
+            {data.map((item, index) => (
+              <div className="productCard" key={index}>
+                <Link
+                  to="product"
+                  style={{ textDecoration: "none" }}
+                  state={{ item }}
+                >
+                  <img
+                    src={`/img/web-pack/${item?.type_alcohol.toLowerCase()}-with-bg.jpg`}
+                    alt={item.type_alcohol}
+                    className="productImage"
+                  />
+                  <div className="productInfo">
+                    <p className="productLabel">
+                      {item.type_alcohol} {item.brand} продукт {item.volume} л{" "}
+                      {item.durability}
+                    </p>
+                    <p className="productCost">{item.cost} грн</p>
+                    <p className="productCountry">
+                      Країна розробника:{" "}
+                      <span className="dots">{item.countries}</span>
+                    </p>
+                    <p className="productVolume">
+                      Об'єм: <span className="dots">{item.volume} л</span>
+                    </p>
+                    <p className="productDurability">
+                      Міцність: <span className="dots">{item.durability}</span>
+                    </p>
+                  </div>
+                </Link>
+                <div style={{ display: "flex", gap: "5px" }}>
+                  <Button
+                    color="danger"
+                    variant="solid"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      addCartProduct(item);
+                    }}
+                    style={{ width: "100%" }}
+                  >
+                    Додати в корзину
+                  </Button>
+                  {user?.role === "Admin" && (
+                    <Button
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        deleteProduct(item.id);
+                      }}
+                    >
+                      Видалити продукт
+                    </Button>
+                  )}
                 </div>
-              </Link>
-              <Button
-                color="danger"
-                variant="solid"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  addCartProduct(item);
-                }}
-              >
-                Додати в корзину
-              </Button>
-            </div>
-          ))}
-        </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <Empty style={{width: "40%"}} description="Немає подібних товарів" />
+        )}
       </div>
     </>
   );

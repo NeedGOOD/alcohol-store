@@ -8,7 +8,7 @@ import {
   CloseOutlined,
 } from "@ant-design/icons";
 import "../../style.css";
-import { Avatar, Input, Modal, Button } from "antd";
+import { Avatar, Input, Modal, Button, Empty } from "antd";
 import AuthModal from "../addAuthPage";
 
 const { Search } = Input;
@@ -148,41 +148,35 @@ function Header() {
         ]}
       >
         <div>
-          {product.map((item: any, index: number) => (
-            <div className="cartProduct">
-              <div id="cartProductImg">
-                <img src={item.img} alt={item.type_alcohol} />
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  width: "100%",
-                }}
-              >
-                <p className="contentProduct">
-                  {item.type_alcohol} {item.brand} продукт {item.volume} л{" "}
-                  {item.durability}
-                </p>
+          {product.length > 0 ? (
+            product.map((item: any, index: number) => (
+              <div className="cartProduct" key={index}>
+                <div id="cartProductImg">
+                  <img
+                    src={`/img/web-pack/${item?.type_alcohol.toLowerCase()}-with-bg.jpg`}
+                    alt={item.type_alcohol}
+                  />
+                </div>
                 <div
                   style={{
                     display: "flex",
-                    flexDirection: "column",
                     justifyContent: "space-between",
+                    width: "100%",
                   }}
                 >
-                  <Button
-                    type="text"
-                    icon={<CloseOutlined />}
-                    shape="circle"
-                    size="large"
-                    onClick={() => handleRemoveProduct(index)}
-                  />
-                  <p>x {item.cost} грн</p>
+                  <p className="contentProduct">
+                    {item.type_alcohol} {item.brand} продукт {item.volume} л{" "}
+                    {item.durability}
+                  </p>
+                  <div>
+                    <p>x {item.cost} грн</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <Empty description="Замовлення порожнє" />
+          )}
           <div
             style={{
               display: "flex",

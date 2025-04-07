@@ -6,7 +6,7 @@ import { FilterAlcoholDto } from './dto/filter-alcohol.dto';
 import { Express } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { basename, extname } from 'path';
 
 @Controller('alcohol')
 export class AlcoholController {
@@ -17,7 +17,8 @@ export class AlcoholController {
       destination: './uploads',
       filename: (req, file, callback) => {
         const ext = extname(file.originalname); // ".png", ".jpg"
-        const filename = 'example' + ext;
+        const base = basename(file.originalname, ext);
+        const filename = base + ext;
         callback(null, filename);
       },
     }),

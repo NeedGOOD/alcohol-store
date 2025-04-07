@@ -5,12 +5,23 @@ import { FilterAlcoholDto } from './dto/filter-alcohol.dto';
 // import { UpdateAlcoholDto } from './dto/update-alcohol.dto';
 import { Express } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 
 @Controller('alcohol')
 export class AlcoholController {
   constructor(private readonly alcoholService: AlcoholService) { }
 
-  @UseInterceptors(FileInterceptor('file', { dest: './uploads/' }))
+  @UseInterceptors(FileInterceptor('file', {
+    storage: diskStorage({
+      destination: './uploads',
+      filename: (req, file, callback) => {
+        const ext = extname(file.originalname); // ".png", ".jpg"
+        const filename = 'example' + ext;
+        callback(null, filename);
+      },
+    }),
+  }))
   @Post()
   create(
     @UploadedFile() file: Express.Multer.File,

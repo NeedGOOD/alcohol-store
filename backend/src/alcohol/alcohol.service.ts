@@ -3,7 +3,7 @@ import { CreateAlcoholDto } from './dto/create-alcohol.dto';
 // import { UpdateAlcoholDto } from './dto/update-alcohol.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Alcohol } from './entities/alcohol.entity';
-import { FindOptionsWhere, In, Repository } from 'typeorm';
+import { Between, FindOptionsWhere, In, Repository } from 'typeorm';
 import { FilterAlcoholDto } from './dto/filter-alcohol.dto';
 
 @Injectable()
@@ -49,6 +49,8 @@ export class AlcoholService {
         where[key] = value;
       }
     });
+
+    // console.log('where', where);
 
     try {
       return await this.alcoholRepository.find({ where });

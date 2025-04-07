@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UploadedFile, UseInterceptors, ParseFloatPipe } from '@nestjs/common';
 import { AlcoholService } from './alcohol.service';
 import { CreateAlcoholDto } from './dto/create-alcohol.dto';
 import { FilterAlcoholDto } from './dto/filter-alcohol.dto';
@@ -26,9 +26,15 @@ export class AlcoholController {
   @Post()
   create(
     @UploadedFile() file: Express.Multer.File,
+    @Body('volume', ParseFloatPipe) volume: number,
+    @Body('durability', ParseFloatPipe) durability: number,
+    @Body('cost', ParseFloatPipe) cost: number,
     @Body() createAlcoholDto: CreateAlcoholDto
   ) {
-    if (file) {
+    if (file && volume && durability && cost) {
+      createAlcoholDto.volume = volume;
+      createAlcoholDto.durability = durability;
+      createAlcoholDto.cost = cost;
       createAlcoholDto.file = file.path;
     }
     console.log(createAlcoholDto);

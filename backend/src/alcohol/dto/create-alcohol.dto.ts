@@ -18,12 +18,12 @@ export class CreateAlcoholDto {
 
   @IsNumber({ maxDecimalPlaces: 2 })
   @IsNotEmpty()
-  @Transform(({ value }) => parseFloat(value))
+  @Transform(({ value }) => Number(value))
   volume: number;
 
   @IsNumber({ maxDecimalPlaces: 2 })
   @IsNotEmpty()
-  @Transform(({ value }) => parseFloat(value))
+  @Transform(({ value }) => Number(value))
   durability: number;
 
   @IsBoolean()
@@ -32,7 +32,7 @@ export class CreateAlcoholDto {
 
   @IsNumber({ maxDecimalPlaces: 2 })
   @IsNotEmpty()
-  @Transform(({ value }) => parseFloat(value))
+  @Transform(({ value }) => Number(value))
   cost: number;
 
   @IsString()

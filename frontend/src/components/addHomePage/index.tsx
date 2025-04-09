@@ -115,7 +115,7 @@ function Home() {
                 value: "Gin",
               },
               {
-                img: "/img/web-pack/liquer-with-bg.jpg",
+                img: "/img/web-pack/liquor-with-bg.jpg",
                 label: "Лікер",
                 value: "Liquor",
               },

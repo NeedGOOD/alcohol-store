@@ -85,7 +85,7 @@ function Home() {
                 value: "Whiskey",
               },
               {
-                img: "/img/web-pack/brendi-with-bg.jpg",
+                img: "/img/web-pack/brandy-with-bg.jpg",
                 label: "Бренді",
                 value: "Brandy",
               },

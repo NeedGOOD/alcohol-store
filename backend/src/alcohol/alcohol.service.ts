@@ -1,9 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAlcoholDto } from './dto/create-alcohol.dto';
-import { UpdateAlcoholDto } from './dto/update-alcohol.dto';
+// import { UpdateAlcoholDto } from './dto/update-alcohol.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Alcohol } from './entities/alcohol.entity';
-import { Repository } from 'typeorm';
+import { Between, FindOptionsWhere, In, Repository } from 'typeorm';
+import { FilterAlcoholDto } from './dto/filter-alcohol.dto';
 
 @Injectable()
 export class AlcoholService {
@@ -33,11 +34,37 @@ export class AlcoholService {
     }
   }
 
-  update(id: number, updateAlcoholDto: UpdateAlcoholDto) {
-    return `This action updates a #${id} alcohol`;
+  async findAlcoholByFilter(filterAlcoholDto: FilterAlcoholDto) {
+    const where: FindOptionsWhere<Alcohol> = {};
+
+    // Object.keys(where).forEach(key => where[key] === undefined && delete where[key]);
+
+    Object.entries(filterAlcoholDto).forEach(([key, value]) => {
+      if (value === undefined) return;
+
+      // масив → In()
+      if (Array.isArray(value)) {
+        where[key] = In(value);
+      } else {
+        where[key] = value;
+      }
+    });
+
+    // console.log('where', where);
+
+    try {
+      return await this.alcoholRepository.find({ where });
+    } catch (error) {
+      throw new NotFoundException('Alcohol not found.');
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} alcohol`;
+  // update(id: number, updateAlcoholDto: UpdateAlcoholDto) {
+  //   return `This action updates a #${id} alcohol`;
+  // }
+
+  async remove(id: number) {
+    await this.findOne(id);
+    return await this.alcoholRepository.delete(id);
   }
 }

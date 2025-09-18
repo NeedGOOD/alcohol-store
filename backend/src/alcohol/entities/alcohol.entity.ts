@@ -33,9 +33,12 @@ export class Alcohol {
   @Column({ type: 'decimal', precision: 10, scale: 2, name: 'cost', nullable: false })
   cost: number;
 
-  @Column({ type: 'text', name: 'description', nullable: true })
-  description?: string;
+  @Column({ type: 'text', name: 'description', nullable: false })
+  description: string;
 
-  @OneToMany(() => OrderItem, (orderItems) => orderItems.alcohol)
+  @Column({ type: 'varchar', length: 255, name: 'file', nullable: false })
+  file: string;
+
+  @OneToMany(() => OrderItem, (orderItems) => orderItems.alcohol, { onDelete: 'CASCADE' })
   orderItems: OrderItem[];
 }

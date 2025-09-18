@@ -1,4 +1,18 @@
 services:
+  alcohol-store-frontend:
+    container_name: alcohol-store-frontend
+    build:
+      context: ./frontend
+    command: npm start
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/usr/fe
+      - fe-nm:/usr/fe/node_modules
+    networks:
+      alcohol-store:
+
   alcohol-store-backend:
     container_name: alcohol-store-backend
     build:
@@ -6,7 +20,7 @@ services:
     command: npm run start:dev
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "4000:4000"
     volumes:
       - ./backend:/usr/be
       - be-nm:/usr/be/node_modules
@@ -17,7 +31,7 @@ services:
       POSTGRES_USERNAME: ${POSTGRES_USERNAME}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     networks:
-      alcohol-store-be:
+      alcohol-store:
 
   postgres:
     container_name: postgresql
@@ -31,11 +45,12 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       PGDATA: "/var/lib/postgresql/data/pgdata"
     networks:
-      alcohol-store-be:
+      alcohol-store:
 
 volumes:
+  fe-nm:
   be-nm:
   postgres-data:
 
 networks:
-  alcohol-store-be:
+  alcohol-store:

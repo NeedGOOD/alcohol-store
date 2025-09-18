@@ -1,20 +1,60 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UploadedFile, UseInterceptors, ParseFloatPipe } from '@nestjs/common';
 import { AlcoholService } from './alcohol.service';
 import { CreateAlcoholDto } from './dto/create-alcohol.dto';
-import { UpdateAlcoholDto } from './dto/update-alcohol.dto';
+import { FilterAlcoholDto } from './dto/filter-alcohol.dto';
+// import { UpdateAlcoholDto } from './dto/update-alcohol.dto';
+import { Express } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { basename, extname } from 'path';
 
 @Controller('alcohol')
 export class AlcoholController {
   constructor(private readonly alcoholService: AlcoholService) { }
 
+  @UseInterceptors(FileInterceptor('file', {
+    storage: diskStorage({
+      destination: './uploads',
+      filename: (req, file, callback) => {
+        const ext = extname(file.originalname); // ".png", ".jpg"
+        const base = basename(file.originalname, ext);
+        const filename = base + ext;
+        callback(null, filename);
+      },
+    }),
+  }))
   @Post()
-  create(@Body() createAlcoholDto: CreateAlcoholDto) {
+  create(
+    @UploadedFile() file: Express.Multer.File,
+    @Body('volume', ParseFloatPipe) volume: number,
+    @Body('durability', ParseFloatPipe) durability: number,
+    @Body('cost', ParseFloatPipe) cost: number,
+    @Body() createAlcoholDto: CreateAlcoholDto
+  ) {
+    if (file && volume && durability && cost) {
+      createAlcoholDto.volume = volume;
+      createAlcoholDto.durability = durability;
+      createAlcoholDto.cost = cost;
+      createAlcoholDto.file = file.path;
+    }
+    console.log(createAlcoholDto);
+
     return this.alcoholService.create(createAlcoholDto);
   }
+
+  // @Post('/:id/upload-file')
+  // uploadPhoto(@UploadedFile() file: Express.Multer.File, @Param('id') id: string) {
+  // console.log(file);
+  // }
 
   @Get()
   findAll() {
     return this.alcoholService.findAll();
+  }
+
+  @Get('filter')
+  findAlcoholByFilter(@Query() filterAlcoholDto: FilterAlcoholDto) {
+    return this.alcoholService.findAlcoholByFilter(filterAlcoholDto);
   }
 
   @Get(':id')
@@ -22,10 +62,10 @@ export class AlcoholController {
     return this.alcoholService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAlcoholDto: UpdateAlcoholDto) {
-    return this.alcoholService.update(+id, updateAlcoholDto);
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateAlcoholDto: UpdateAlcoholDto) {
+  //   return this.alcoholService.update(+id, updateAlcoholDto);
+  // }
 
   @Delete(':id')
   remove(@Param('id') id: string) {

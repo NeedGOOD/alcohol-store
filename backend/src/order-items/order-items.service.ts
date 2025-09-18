@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateOrderItemDto } from './dto/create-order-item.dto';
-import { UpdateOrderItemDto } from './dto/update-order-item.dto';
+// import { UpdateOrderItemDto } from './dto/update-order-item.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OrderItem } from './entities/order-item.entity';
 import { Repository } from 'typeorm';
@@ -40,11 +40,11 @@ export class OrderItemsService {
     return `This action returns a #${id} orderItem`;
   }
 
-  update(id: number, updateOrderItemDto: UpdateOrderItemDto) {
-    return `This action updates a #${id} orderItem`;
-  }
+  // update(id: number, updateOrderItemDto: UpdateOrderItemDto) {
+  //   return `This action updates a #${id} orderItem`;
+  // }
 
-  remove(id: number) {
-    return `This action removes a #${id} orderItem`;
+  async remove(id: number) {
+    return this.orderItemService.delete(id);
   }
 }

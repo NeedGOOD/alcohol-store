@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ConflictException, forwardRef, Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -6,12 +6,15 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { UpdatePasswordUserDto } from './dto/update-password-user.dto';
+import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>
+    private readonly userRepository: Repository<User>,
+    @Inject(forwardRef(() => AuthService))
+    private readonly authService: AuthService,
   ) { }
 
   async create(createUserDto: CreateUserDto) {
@@ -28,7 +31,19 @@ export class UsersService {
       password: hashedPassword,
     });
 
-    return await this.userRepository.save(createUser);
+    const savedUser = await this.userRepository.save(createUser);
+
+    const token = await this.authService.register({
+      userId: savedUser.id,
+      email: savedUser.email,
+    });
+
+    console.log(token);
+
+    return {
+      ...savedUser,
+      accessToken: token,
+    };
   }
 
   async findAll() {
@@ -46,7 +61,7 @@ export class UsersService {
     }
   }
 
-  private async findUserByEmail(email: string) {
+  async findUserByEmail(email: string) {
     return this.userRepository.findOne({ where: { email } })
   }
 
@@ -98,7 +113,7 @@ export class UsersService {
     return await bcrypt.hash(password, salt);
   }
 
-  private async verificationPassword(password: string, hashedPassword: string) {
+  async verificationPassword(password: string, hashedPassword: string) {
     const checkingPassword = await bcrypt.compare(password, hashedPassword);
 
     if (!checkingPassword) {

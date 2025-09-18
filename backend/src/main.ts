@@ -4,12 +4,13 @@ import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  // app.useSt
   app.useGlobalPipes(new ValidationPipe());
-  // app.enableCors({
-  //   origin: '*',  // Дозволяє доступ з усіх доменів
-  //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',  // Дозволяє ці методи
-  //   allowedHeaders: 'Content-Type, Authorization',  // Дозволяє ці заголовки
-  // });
-  await app.listen(process.env.PORT ?? 3000);
+  app.enableCors({
+    origin: '*',  // Дозволяє доступ з усіх доменів
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',  // Дозволяє ці методи
+    allowedHeaders: 'Content-Type, Authorization',  // Дозволяє ці заголовки
+  });
+  await app.listen(process.env.PORT ?? 4000);
 }
 bootstrap();

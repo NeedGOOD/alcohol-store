@@ -12,6 +12,8 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
+# docker_entrypoint.sh
+
 # OS
 .DS_Store
 
@@ -36,7 +38,7 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 # dotenv environment variable files
-.env
+# .env
 .env.development.local
 .env.test.local
 .env.production.local

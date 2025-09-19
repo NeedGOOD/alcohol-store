@@ -1,15 +1,7 @@
 import "./catalog.css";
-import React, { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import "../../style.css";
-import {
-  Slider,
-  Collapse,
-  Checkbox,
-  Button,
-  Breadcrumb,
-  message,
-  Empty,
-} from "antd";
+import { Collapse, Checkbox, Button, Breadcrumb, message, Empty } from "antd";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
@@ -154,7 +146,7 @@ function Catalog() {
     { label: "4,5", value: "4.5" },
   ];
   const country = [
-    { label: "Україна", value: "Ukraine" },
+    { label: "Украї", value: "Ukraine" },
     { label: "США", value: "United States" },
     { label: "Канада", value: "Canada" },
     { label: "Німеччина", value: "Germany" },
@@ -202,13 +194,17 @@ function Catalog() {
     const stored = localStorage.getItem("cart");
     const currentCart: any[] = stored ? JSON.parse(stored) : [];
 
-    const alreadyInCart = currentCart.some((product) => product.id === item.id);
+    const foundItem = currentCart.find((product) => product.id === item.id);
 
-    if (alreadyInCart) {
-      message.error("Товар вже в корзині!");
+    if (foundItem) {
+      foundItem.quantity += 1;
+      localStorage.setItem("cart", JSON.stringify(currentCart));
+      message.success("Товар вже в корзині, кількість збільшена на 1");
+      window.location.reload();
       return;
     }
 
+    item.quantity = 1;
     const updatedCart = [...currentCart, item];
     localStorage.setItem("cart", JSON.stringify(updatedCart));
     window.location.reload();
@@ -365,7 +361,10 @@ function Catalog() {
             ))}
           </div>
         ) : (
-          <Empty style={{width: "40%"}} description="Немає подібних товарів" />
+          <Empty
+            style={{ width: "40%" }}
+            description="Немає подібних товарів"
+          />
         )}
       </div>
     </>

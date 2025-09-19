@@ -44,5 +44,8 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://alcohol-store-backend:4000"
+  "proxy": "http://alcohol-store-backend:4000",
+  "devDependencies": {
+    "webpack-dev-server": "^5.2.2"
+  }
 }

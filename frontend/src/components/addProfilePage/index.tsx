@@ -8,7 +8,7 @@ import {
   Collapse,
   Button,
   message,
-  Empty
+  Empty,
 } from "antd";
 import {
   UserOutlined,
@@ -26,14 +26,19 @@ const { Sider, Content } = Layout;
 const { Panel } = Collapse;
 const { Title, Text } = Typography;
 type Product = {
-  item_code: string;
-  img: string;
-  type_alcohol: string;
+  addedAt: string;
+  availability: boolean;
   brand: string;
-  countries: string;
-  volume: string;
-  durability: string;
   cost: string;
+  countries: string;
+  description: string;
+  durability: string;
+  file: string;
+  id: number;
+  item_code: string;
+  quantity: number;
+  type_alcohol: string;
+  volume: string;
 };
 
 const Profile: React.FC = () => {
@@ -45,7 +50,7 @@ const Profile: React.FC = () => {
   const [visiblePasswordChange, setVisiblePasswordChange] = useState(false);
   const [visibleInfoChange, setVisibleInfoChange] = useState(false);
   const [product, setProduct] = useState(() => {
-    const stored = localStorage.getItem("cart");
+    const stored = localStorage.getItem("order");
     return stored ? JSON.parse(stored) : [];
   });
 
@@ -146,39 +151,121 @@ const Profile: React.FC = () => {
           </Card>
         );
       case "2":
+        // product — объект, где ключи — даты, а значения — массивы товаров
+        const groupedProducts = product as Record<string, Product[]>;
+
+        // Получаем все даты
+        const dates = Object.keys(groupedProducts);
+
+        // Считаем общую сумму всех товаров
+        const totalSum = Object.values(groupedProducts)
+          .flat()
+          .reduce((sum, item) => sum + Number(item.cost) * item.quantity, 0);
+
         return (
           <Card title="Мої замовлення">
-            {product.length > 0 ? (
-              product.map((item: any, index: number) => (
-                <div className="cartProduct" key={index}>
-                  <div id="cartProductImg">
-                    <img
-                      src={`/img/web-pack/${item?.type_alcohol.toLowerCase()}-with-bg.jpg`}
-                      alt={item.type_alcohol}
-                    />
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      width: "100%",
-                    }}
-                  >
-                    <p className="contentProduct">
-                      {item.type_alcohol} {item.brand} продукт {item.volume} л{" "}
-                      {item.durability}
-                    </p>
-                    <div>
-                      <p>x {item.cost} грн</p>
+            {dates.length > 0 ? (
+              <>
+                {dates.map((date) => {
+                  // Сумма за эту дату
+                  const dateSum = groupedProducts[date].reduce(
+                    (sum, item) => sum + Number(item.cost) * item.quantity,
+                    0
+                  );
+
+                  return (
+                    <div key={date} style={{ marginBottom: 24 }}>
+                      <h3
+                        style={{
+                          marginBottom: 4,
+                          borderBottom: "1px solid #ccc",
+                          paddingBottom: 4,
+                        }}
+                      >
+                        Дата: {date} —{" "}
+                        <span style={{ color: "#0070f3" }}>
+                          Сума: {dateSum} грн
+                        </span>
+                      </h3>
+
+                      {groupedProducts[date].map((item, index) => (
+                        <div
+                          key={index}
+                          style={{
+                            border: "1px solid #f0f0f0",
+                            borderRadius: 8,
+                            padding: 16,
+                            marginBottom: 12,
+                            background: "#fff",
+                          }}
+                        >
+                          <div style={{ display: "flex", marginBottom: 12 }}>
+                            <img
+                              src={`/img/web-pack/${item.type_alcohol.toLowerCase()}-with-bg.jpg`}
+                              alt={item.type_alcohol}
+                              style={{
+                                width: 100,
+                                height: 100,
+                                objectFit: "cover",
+                                borderRadius: 8,
+                                marginRight: 16,
+                              }}
+                            />
+                            <div style={{ flex: 1 }}>
+                              <h4 style={{ margin: 0 }}>
+                                {item.type_alcohol} {item.brand}
+                              </h4>
+                              <p style={{ margin: 0 }}>
+                                Кількість: {item.quantity} шт.
+                              </p>
+                              <p style={{ margin: 0 }}>
+                                Ціна за одиницю: {item.cost} грн
+                              </p>
+                              <p style={{ margin: 0, fontWeight: "bold" }}>
+                                Сума: {Number(item.cost) * item.quantity} грн
+                              </p>
+                            </div>
+                          </div>
+
+                          <div
+                            style={{
+                              display: "grid",
+                              gridTemplateColumns: "1fr 1fr",
+                            }}
+                          >
+                            <p>
+                              <b>Країна:</b> {item.countries}
+                            </p>
+                            <p>
+                              <b>Наявність:</b>{" "}
+                              {item.availability
+                                ? "✅ Є в наявності"
+                                : "❌ Немає"}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  </div>
+                  );
+                })}
+
+                <div
+                  style={{
+                    textAlign: "right",
+                    fontWeight: "bold",
+                    marginTop: 12,
+                    fontSize: 16,
+                  }}
+                >
+                  Загальна сума: {totalSum} грн
                 </div>
-              ))
+              </>
             ) : (
               <Empty description="Кошик порожній" />
             )}
           </Card>
         );
+
       default:
         return null;
     }

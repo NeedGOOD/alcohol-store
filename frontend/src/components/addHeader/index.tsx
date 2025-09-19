@@ -15,12 +15,14 @@ const { Search } = Input;
 type Product = {
   item_code: string;
   img: string;
+  id: number;
   type_alcohol: string;
   brand: string;
   countries: string;
   volume: string;
   durability: string;
   cost: string;
+  quantity: number;
 };
 
 function Header() {
@@ -37,7 +39,8 @@ function Header() {
 
   const calculateTotalCost = (products: Product[]): number => {
     return products.reduce((total, product) => {
-      return total + parseFloat(product.cost);
+      console.log(product, total);
+      return total + parseFloat(product.cost) * (product.quantity || 1);
     }, 0);
   };
   const showModal = () => {
@@ -48,13 +51,43 @@ function Header() {
     setIsModalOpen(false);
   };
 
+  const formatDateTime = (): string => {
+    const now = new Date();
+
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const year = now.getFullYear();
+
+    return `${hours}:${minutes} ${day}.${month}.${year}`;
+  };
+
+  const handleSubmit = () => {
+    if (!userCookie) {
+      setVisible(true);
+      return;
+    }
+    const stored = localStorage.getItem("order");
+
+    const ordered: Record<string, typeof product> = stored
+      ? JSON.parse(stored)
+      : {};
+
+    ordered[formatDateTime()] = product;
+
+    console.log(ordered);
+
+    localStorage.setItem("order", JSON.stringify(ordered));
+    localStorage.setItem("cart", JSON.stringify([]));
+    setProduct([]);
+  };
+
   const handleCancel = () => {
     setIsModalOpen(false);
   };
-  const handleRemoveProduct = (index: number) => {
-    let updatedProduct = product.filter(
-      (_: Product, idx: number) => idx !== index
-    );
+  const handleRemoveProduct = (id: number) => {
+    let updatedProduct = product.filter((item: Product) => item.id !== id);
 
     if (!Array.isArray(updatedProduct)) {
       updatedProduct = [updatedProduct];
@@ -68,7 +101,13 @@ function Header() {
     <div>
       <nav className="header">
         <ul id="navBar">
-          <img src="/img/logo.png" alt="Logo" id="Logo" />
+          <img
+            src="/img/logo.png"
+            alt="Logo"
+            id="Logo"
+            style={{ cursor: "pointer" }}
+            onClick={() => navigate("/")}
+          />
           <div style={{ display: "flex", alignItems: "center", gap: "30px" }}>
             <div
               style={{
@@ -130,7 +169,10 @@ function Header() {
               key="cancel"
               type="primary"
               danger
-              onClick={handleCancel}
+              onClick={() => {
+                handleSubmit();
+                handleCancel();
+              }}
               style={{ width: "50%" }}
             >
               Продолжить покупку
@@ -139,7 +181,10 @@ function Header() {
               key="ok"
               type="primary"
               danger
-              onClick={handleOk}
+              onClick={() => {
+                handleSubmit();
+                handleOk();
+              }}
               style={{ width: "50%" }}
             >
               Оформить заказ
@@ -169,8 +214,14 @@ function Header() {
                     {item.durability}
                   </p>
                   <div>
-                    <p>x {item.cost} грн</p>
+                    <p>
+                      {item.quantity ?? ""} x {item.cost} грн
+                    </p>
                   </div>
+                  <CloseOutlined
+                    style={{ fontSize: 24 }}
+                    onClick={() => handleRemoveProduct(item.id)}
+                  />
                 </div>
               </div>
             ))

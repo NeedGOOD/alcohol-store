@@ -169,10 +169,7 @@ function Header() {
               key="cancel"
               type="primary"
               danger
-              onClick={() => {
-                handleSubmit();
-                handleCancel();
-              }}
+              onClick={handleCancel}
               style={{ width: "50%" }}
             >
               Продолжить покупку

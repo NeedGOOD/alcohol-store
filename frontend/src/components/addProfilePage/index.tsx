@@ -151,13 +151,10 @@ const Profile: React.FC = () => {
           </Card>
         );
       case "2":
-        // product — объект, где ключи — даты, а значения — массивы товаров
         const groupedProducts = product as Record<string, Product[]>;
 
-        // Получаем все даты
         const dates = Object.keys(groupedProducts);
 
-        // Считаем общую сумму всех товаров
         const totalSum = Object.values(groupedProducts)
           .flat()
           .reduce((sum, item) => sum + Number(item.cost) * item.quantity, 0);
@@ -167,7 +164,6 @@ const Profile: React.FC = () => {
             {dates.length > 0 ? (
               <>
                 {dates.map((date) => {
-                  // Сумма за эту дату
                   const dateSum = groupedProducts[date].reduce(
                     (sum, item) => sum + Number(item.cost) * item.quantity,
                     0
@@ -314,6 +310,8 @@ const Profile: React.FC = () => {
                 "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
               message.success("Ви вийшли з профілю");
               navigate("/");
+              localStorage.setItem("cart", JSON.stringify([]));
+              window.location.reload();
             }}
           >
             Вихід
